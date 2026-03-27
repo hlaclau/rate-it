@@ -1,0 +1,16 @@
+# Binaries
+/rate-it-api
+*.exe
+*.out
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
