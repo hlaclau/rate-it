@@ -1,5 +1,5 @@
-﻿#!/usr/bin/env bash
-# MISE description="Install all dependencies (requires mise)"
+#!/usr/bin/env bash
+#MISE description="Install all dependencies (requires mise)"
 
 mise install
 (cd frontend && bun install)

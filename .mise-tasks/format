@@ -1,5 +1,5 @@
-﻿#!/usr/bin/env bash
-# MISE description="Format frontend and backend"
+#!/usr/bin/env bash
+#MISE description="Format frontend and backend"
 
 (cd frontend && bun run format)
 (cd backend && go fmt ./...)

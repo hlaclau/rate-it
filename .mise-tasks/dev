@@ -1,5 +1,5 @@
-﻿#!/usr/bin/env bash
-# MISE description="Start everything (api + frontend + databases)"
+#!/usr/bin/env bash
+#MISE description="Start everything (api + frontend + databases)"
 
 mise run db-up
 mise run dev-api &

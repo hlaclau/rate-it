@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env bash
-# MISE description="Stop PostgreSQL and Redis"
+#!/usr/bin/env bash
+#MISE description="Stop PostgreSQL and Redis"
 
 docker compose -f docker-compose.dev.yml down
