@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+#MISE description="Lint frontend and backend"
+
+(cd frontend && bun run lint)
+(cd backend && go vet ./...)

@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+#MISE description="Start PostgreSQL and Redis"
+
+docker compose -f docker-compose.dev.yml up -d
