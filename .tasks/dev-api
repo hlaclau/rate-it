@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# MISE description="Start the Go API (port 8080)"
+
+cd backend && go run ./cmd/...

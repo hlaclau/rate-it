@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# MISE description="Start the Nuxt frontend (port 3000)"
+
+cd frontend && bun run dev
