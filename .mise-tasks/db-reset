@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+﻿#!/usr/bin/env bash
 # MISE description="Wipe and restart databases (destroys data)"
 
 docker compose -f docker-compose.dev.yml down -v

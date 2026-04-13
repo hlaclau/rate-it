@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+﻿#!/usr/bin/env bash
 # MISE description="Install all dependencies (requires mise)"
 
 mise install

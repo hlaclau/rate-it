@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+﻿#!/usr/bin/env bash
 # MISE description="Format frontend and backend"
 
 (cd frontend && bun run format)

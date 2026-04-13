@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+﻿#!/usr/bin/env bash
 # MISE description="Stop api, frontend and databases"
 
 lsof -ti:8080 | xargs kill -9 2>/dev/null || true

@@ -1,6 +1,3 @@
 [tools]
 go = "1.25"
 bun = "latest"
-
-[task_config]
-includes = [".tasks"]
