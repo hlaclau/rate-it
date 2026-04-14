@@ -2,3 +2,66 @@
 go = "1.25"
 bun = "latest"
 
+[tasks."db-up"]
+description = "Start PostgreSQL and Redis"
+run = "docker compose -f docker-compose.dev.yml up -d"
+
+[tasks."db-down"]
+description = "Stop PostgreSQL and Redis"
+run = "docker compose -f docker-compose.dev.yml down"
+
+[tasks."db-reset"]
+description = "Wipe and restart databases (destroys data)"
+run = """
+docker compose -f docker-compose.dev.yml down -v
+docker compose -f docker-compose.dev.yml up -d
+"""
+
+[tasks."dev"]
+description = "Start everything (api + frontend + databases)"
+run = """
+mise run db-up
+mise run dev-api &
+mise run dev-ui &
+wait
+"""
+
+[tasks."dev-api"]
+description = "Start the Go API (port 8080)"
+dir = "backend"
+run = "go run ./cmd/..."
+
+[tasks."dev-ui"]
+description = "Start the Nuxt frontend (port 3000)"
+dir = "frontend"
+run = "bun run dev"
+
+[tasks."format"]
+description = "Format frontend and backend"
+run = """
+(cd frontend && bun run format)
+(cd backend && go fmt ./...)
+"""
+
+[tasks."lint"]
+description = "Lint frontend and backend"
+run = """
+(cd frontend && bun run lint)
+(cd backend && go vet ./...)
+"""
+
+[tasks."install"]
+description = "Install all dependencies (requires mise)"
+run = """
+mise install
+(cd frontend && bun install)
+(cd backend && go mod download)
+"""
+
+[tasks."stop"]
+description = "Stop api, frontend and databases"
+run = """
+lsof -ti:8080 | xargs kill -9 2>/dev/null || true
+lsof -ti:3000 | xargs kill -9 2>/dev/null || true
+docker compose -f docker-compose.dev.yml down
+"""
