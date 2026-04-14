@@ -19,20 +19,17 @@ docker compose -f docker-compose.dev.yml up -d
 
 [tasks."dev"]
 description = "Start everything (api + frontend + databases)"
-run = """
-mise run db-up
-mise run dev-api &
-mise run dev-ui &
-wait
-"""
+depends = ["dev-api", "dev-ui"]
 
 [tasks."dev-api"]
 description = "Start the Go API (port 8080)"
+depends = ["db-up"]
 dir = "backend"
 run = "go run ./cmd/..."
 
 [tasks."dev-ui"]
 description = "Start the Nuxt frontend (port 3000)"
+depends = ["db-up"]
 dir = "frontend"
 run = "bun run dev"
 
