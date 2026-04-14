@@ -1,6 +1,14 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  ssr: false,
+
   modules: ['@nuxt/eslint', '@nuxt/ui'],
+
+  runtimeConfig: {
+    public: {
+      apiBase: 'http://localhost:8080',
+    },
+  },
 
   devtools: {
     enabled: true,
