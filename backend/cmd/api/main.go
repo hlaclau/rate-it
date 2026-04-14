@@ -7,7 +7,13 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	adaptercache "github.com/hlaclau/rate-it-api/internal/adapter/cache"
+	adaptortmdb "github.com/hlaclau/rate-it-api/internal/adapter/tmdb"
+	"github.com/hlaclau/rate-it-api/internal/handler"
+	"github.com/hlaclau/rate-it-api/internal/repository"
+	"github.com/hlaclau/rate-it-api/internal/usecase"
 	"github.com/hlaclau/rate-it-api/pkg/database"
+	pkgredis "github.com/hlaclau/rate-it-api/pkg/redis"
 	"github.com/joho/godotenv"
 )
 
@@ -16,10 +22,9 @@ func main() {
 		log.Println("no .env file found, using environment variables")
 	}
 
-	dsn := os.Getenv("DATABASE_URL")
-	if dsn == "" {
-		log.Fatal("DATABASE_URL is required")
-	}
+	dsn := mustEnv("DATABASE_URL")
+	redisURL := mustEnv("REDIS_URL")
+	tmdbKey := mustEnv("TMDB_API_KEY")
 
 	db, err := database.Open(dsn)
 	if err != nil {
@@ -32,6 +37,20 @@ func main() {
 	}
 	log.Println("migrations applied")
 
+	redisClient, err := pkgredis.New(redisURL)
+	if err != nil {
+		log.Fatalf("connect redis: %v", err)
+	}
+	defer redisClient.Close()
+
+	mediaHandler := handler.NewMediaHandler(
+		usecase.NewMediaUseCase(
+			repository.NewMediaRepository(db),
+			adaptortmdb.New(tmdbKey),
+			adaptercache.NewRedisCache(redisClient),
+		),
+	)
+
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
@@ -40,6 +59,8 @@ func main() {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("ok"))
 	})
+
+	mediaHandler.Routes(r)
 
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -50,4 +71,12 @@ func main() {
 	if err = http.ListenAndServe(":"+port, r); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func mustEnv(key string) string {
+	v := os.Getenv(key)
+	if v == "" {
+		log.Fatalf("%s is required", key)
+	}
+	return v
 }

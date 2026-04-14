@@ -1,22 +1,22 @@
 meta {
-  name: Get Movie by ID
+  name: find movie by id
   type: http
   seq: 1
 }
 
 get {
-  url: {{tmdb_base_url}}/movie/:movie_id
+  url: {{tmdb_base_url}}/movie/:movie_id?language=en-US&append_to_response=credits,videos
   body: none
   auth: none
-}
-
-params:path {
-  movie_id: 550
 }
 
 params:query {
   language: en-US
   append_to_response: credits,videos
+}
+
+params:path {
+  movie_id: 55
 }
 
 headers {
@@ -26,24 +26,24 @@ headers {
 
 docs {
   # Get Movie by ID
-
+  
   Returns the primary information about a movie.
-
+  
   `movie_id` **550** is Fight Club — a good default to sanity-check the response shape.
-
+  
   ## Key response fields used by rate-it
-
+  
   | Field | Maps to |
   |-------|---------|
   | `id` | `Media.ExternalID` |
   | `title` | `Media.Title` |
   | `poster_path` | `Media.PosterPath` |
   | `release_date` (year part) | `Media.ReleaseYear` |
-
+  
   Source is always `tmdb`, type is `movie`.
-
+  
   ## Auth
-
+  
   Use a **Bearer token** (API Read Access Token from https://www.themoviedb.org/settings/api).
   Set `tmdb_api_key` as a secret variable in your environment.
 }
