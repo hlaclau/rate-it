@@ -4,9 +4,11 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/cors"
 	adaptercache "github.com/hlaclau/rate-it-api/internal/adapter/cache"
 	adaptortmdb "github.com/hlaclau/rate-it-api/internal/adapter/tmdb"
 	"github.com/hlaclau/rate-it-api/internal/handler"
@@ -54,6 +56,11 @@ func main() {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
+	r.Use(cors.Handler(cors.Options{
+		AllowedOrigins: strings.Split(envOr("ALLOWED_ORIGINS", "http://localhost:3000"), ","),
+		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders: []string{"Accept", "Authorization", "Content-Type"},
+	}))
 
 	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
@@ -79,4 +86,11 @@ func mustEnv(key string) string {
 		log.Fatalf("%s is required", key)
 	}
 	return v
+}
+
+func envOr(key, fallback string) string {
+	if v := os.Getenv(key); v != "" {
+		return v
+	}
+	return fallback
 }
