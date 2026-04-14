@@ -6,7 +6,7 @@ type MediaSource string
 type MediaType string
 
 const (
-	SourceTMDB        MediaSource = "tmdb"
+	SourceTMDB MediaSource = "tmdb"
 )
 
 const (
