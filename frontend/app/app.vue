@@ -81,7 +81,7 @@ useSeoMeta({
           <UDropdownMenu :items="userMenuItems">
             <UButton color="purple" variant="soft" trailing-icon="i-lucide-chevron-down" size="sm">
               <UIcon name="i-lucide-user" class="size-4" />
-              <span class="hidden sm:inline ml-1">{{ user.username }}</span>
+              <span class="ml-1">{{ user.username }}</span>
             </UButton>
           </UDropdownMenu>
         </template>
