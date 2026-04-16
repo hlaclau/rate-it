@@ -1,0 +1,16 @@
+meta {
+  name: logout
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{base_url}}/api/logout
+  body: none
+  auth: none
+}
+
+docs {
+  Invalidates the current session.
+  Requires a valid session cookie.
+}

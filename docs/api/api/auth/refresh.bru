@@ -1,0 +1,16 @@
+meta {
+  name: refresh
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{base_url}}/api/refresh
+  body: none
+  auth: none
+}
+
+docs {
+  Refreshes the session token.
+  Requires a valid session cookie.
+}
