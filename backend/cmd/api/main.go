@@ -50,11 +50,21 @@ func main() {
 	authUseCase := usecase.NewAuthUseCase(userRepo, sessionCache)
 	authHandler := handler.NewAuthHandler(authUseCase)
 
+	tmdbFetcher := adaptortmdb.New(tmdbKey)
+	mediaRepo := repository.NewMediaRepository(db)
 	mediaHandler := handler.NewMediaHandler(
 		usecase.NewMediaUseCase(
-			repository.NewMediaRepository(db),
-			adaptortmdb.New(tmdbKey),
+			mediaRepo,
+			tmdbFetcher,
 			adaptercache.NewRedisCache(redisClient),
+		),
+	)
+
+	listHandler := handler.NewListHandler(
+		usecase.NewListUseCase(
+			repository.NewUserMediaRepository(db),
+			mediaRepo,
+			tmdbFetcher,
 		),
 	)
 
@@ -78,6 +88,7 @@ func main() {
 	r.Route("/api", func(r chi.Router) {
 		authHandler.Routes(r)
 		mediaHandler.Routes(r)
+		listHandler.Routes(r)
 	})
 
 	port := os.Getenv("PORT")

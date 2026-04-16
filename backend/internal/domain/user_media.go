@@ -13,6 +13,7 @@ type UserMedia struct {
 	UserID  string          `db:"user_id"`
 	MediaID string          `db:"media_id"`
 	Status  UserMediaStatus `db:"status"`
-	Rating  *int16          `db:"rating"` // 1–10, nil if not rated
+	Rating  *int16          `db:"rating"`  // 1–10, nil if not rated
+	Review  *string         `db:"review"`  // optional text review
 	AddedAt time.Time       `db:"added_at"`
 }

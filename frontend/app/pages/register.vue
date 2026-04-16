@@ -6,7 +6,7 @@
         <h1 class="text-4xl font-bold text-zinc-900 dark:text-white tracking-tight mb-2">
           Rate<span class="text-purple-600 dark:text-purple-500">-It</span>
         </h1>
-        <p class="text-zinc-500 dark:text-zinc-400">Join the Palace Curators.</p>
+        <p class="text-zinc-500 dark:text-zinc-400">Create your account.</p>
       </div>
 
       <!-- Card -->
@@ -15,14 +15,14 @@
 
           <div class="mb-6">
             <UFormGroup label="Username" name="username" class="w-full">
-              <UInput v-model="state.username" placeholder="curator01" icon="i-lucide-user" size="lg" variant="outline"
+              <UInput v-model="state.username" placeholder="username" icon="i-lucide-user" size="lg" variant="outline"
                 color="primary" class="w-full" />
             </UFormGroup>
           </div>
 
           <div class="mb-6">
             <UFormGroup label="Email" name="email" class="w-full">
-              <UInput v-model="state.email" placeholder="curator@midnight.com" icon="i-lucide-mail" size="lg"
+              <UInput v-model="state.email" placeholder="you@example.com" icon="i-lucide-mail" size="lg"
                 variant="outline" color="primary" class="w-full" />
             </UFormGroup>
           </div>
@@ -58,7 +58,7 @@
         </UForm>
 
         <div class="mt-6 text-center text-sm text-zinc-500 dark:text-zinc-400">
-          Already a curator?
+          Already have an account?
           <NuxtLink to="/login" class="text-purple-600 dark:text-purple-400 hover:text-purple-500 dark:hover:text-purple-300 font-medium transition-colors">
             Sign in
           </NuxtLink>
