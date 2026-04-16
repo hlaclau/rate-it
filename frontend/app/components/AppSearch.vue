@@ -77,7 +77,7 @@ router.afterEach(() => {
 </script>
 
 <template>
-  <div class="relative w-full max-w-xs hidden sm:block">
+  <div class="relative hidden sm:block">
     <UInput
       ref="inputRef"
       v-model="query"
@@ -85,6 +85,7 @@ router.afterEach(() => {
       placeholder="Search…"
       :loading="isLoading"
       size="sm"
+      class="w-40 focus-within:w-56 transition-[width] duration-200"
       @focus="isOpen = mediaResults.length > 0"
     />
 

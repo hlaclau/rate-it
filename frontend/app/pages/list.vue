@@ -80,7 +80,7 @@ useSeoMeta({ title: 'My List — Rate It' })
         :key="entry.media_id"
         class="group relative rounded-xl overflow-hidden bg-elevated ring-1 ring-default hover:ring-primary transition-all"
       >
-        <NuxtLink :to="`/movie/${entry.external_id}`">
+        <NuxtLink :to="entry.type === 'series' ? `/series/${entry.external_id}` : `/movie/${entry.external_id}`">
           <img
             v-if="posterUrl(entry.poster_path)"
             :src="posterUrl(entry.poster_path)!"
