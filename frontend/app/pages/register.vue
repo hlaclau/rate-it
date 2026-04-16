@@ -11,7 +11,7 @@
 
       <!-- Card -->
       <div class="bg-white dark:bg-zinc-900/50 backdrop-blur-xl border border-zinc-200 dark:border-zinc-800 p-8 rounded-2xl shadow-xl dark:shadow-2xl w-full">
-        <UForm :state="state" :validate="validate" class="w-full" @submit="onSubmit">
+        <UForm :state="state" :validate="validate" class="w-full" @submit="onSubmit" @error="onError">
 
           <div class="mb-6">
             <UFormGroup label="Username" name="username" class="w-full">
@@ -28,7 +28,7 @@
           </div>
 
           <div class="mb-6">
-            <UFormGroup label="Password" name="password" class="w-full">
+            <UFormGroup label="Password" name="password" class="w-full" help="Min. 8 characters, including 1 uppercase, 1 lowercase and 1 number">
               <UInput v-model="state.password" :type="showPassword ? 'text' : 'password'" placeholder="••••••••"
                 icon="i-lucide-lock" size="lg" variant="outline" color="primary" class="w-full">
                 <template #trailing>
@@ -89,15 +89,36 @@ const validate = (state: any) => {
   } else if (!state.email.includes('@') || !state.email.includes('.')) {
     errors.push({ path: 'email', message: 'Enter a valid email address' })
   }
+  
   if (!state.password) {
     errors.push({ path: 'password', message: 'Required' })
-  } else if (state.password.length < 8) {
-    errors.push({ path: 'password', message: 'Must be at least 8 characters' })
+  } else {
+    if (state.password.length < 8) {
+      errors.push({ path: 'password', message: 'At least 8 characters' })
+    }
+    if (!/[A-Z]/.test(state.password)) {
+      errors.push({ path: 'password', message: 'At least one uppercase letter' })
+    }
+    if (!/[a-z]/.test(state.password)) {
+      errors.push({ path: 'password', message: 'At least one lowercase letter' })
+    }
+    if (!/[0-9]/.test(state.password)) {
+      errors.push({ path: 'password', message: 'At least one number' })
+    }
   }
+
   if (state.password && state.password !== state.confirmPassword) {
     errors.push({ path: 'confirmPassword', message: 'Passwords do not match' })
   }
   return errors
+}
+
+async function onError(event: any) {
+  useToast().add({
+    title: 'Registration failed',
+    description: event.errors[0].message,
+    color: 'error'
+  })
 }
 
 async function onSubmit() {
