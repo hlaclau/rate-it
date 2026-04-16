@@ -18,7 +18,20 @@ onMounted(fetchList)
 const posterUrl = (path: string | null) =>
   path ? `https://image.tmdb.org/t/p/w300${path}` : null
 
-const removeEntry = (mediaID: string) => remove(mediaID)
+// Remove confirmation
+const pendingRemove = ref<ListEntry | null>(null)
+const removing = ref(false)
+
+const confirmRemove = async () => {
+  if (!pendingRemove.value) return
+  removing.value = true
+  try {
+    await remove(pendingRemove.value.media_id)
+    pendingRemove.value = null
+  } finally {
+    removing.value = false
+  }
+}
 
 useSeoMeta({ title: 'My List — Rate It' })
 </script>
@@ -127,9 +140,27 @@ useSeoMeta({ title: 'My List — Rate It' })
           color="neutral"
           variant="solid"
           class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
-          @click.prevent="removeEntry(entry.media_id)"
+          @click.prevent="pendingRemove = entry"
         />
       </div>
     </div>
+
+    <!-- Remove confirmation modal -->
+    <UModal
+      :open="!!pendingRemove"
+      title="Remove from list"
+      :description="pendingRemove ? `Remove &quot;${pendingRemove.title}&quot; from your list?` : ''"
+      @update:open="(v) => { if (!v) pendingRemove = null }"
+    >
+      <template #footer>
+        <div class="flex justify-end gap-2">
+          <UButton color="neutral" variant="ghost" @click="pendingRemove = null">Cancel</UButton>
+          <UButton color="error" :loading="removing" leading-icon="i-lucide-trash-2" @click="confirmRemove">
+            Remove
+          </UButton>
+        </div>
+      </template>
+    </UModal>
+
   </UContainer>
 </template>

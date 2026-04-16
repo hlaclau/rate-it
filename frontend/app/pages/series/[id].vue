@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { ListEntry } from '~/composables/useList'
-
 interface Genre {
   id: number
   name: string
@@ -79,66 +77,6 @@ const firstAirDate = computed(() => {
   })
 })
 
-// List management
-const { isAuthenticated } = useAuth()
-const { addOrUpdate, remove, fetchStatus } = useList()
-
-const listEntry = ref<ListEntry | null>(null)
-const showForm = ref(false)
-const formStatus = ref<'watched' | 'plan_to_watch'>('plan_to_watch')
-const formRating = ref<number | null>(null)
-const formReview = ref<string>('')
-const saving = ref(false)
-
-const loadListStatus = async () => {
-  if (!isAuthenticated.value) return
-  listEntry.value = await fetchStatus(String(route.params.id))
-  if (listEntry.value) {
-    formStatus.value = listEntry.value.status
-    formRating.value = listEntry.value.rating
-    formReview.value = listEntry.value.review ?? ''
-  }
-}
-
-watch(() => series.value, (s) => {
-  if (s) loadListStatus()
-})
-
-const submitListForm = async () => {
-  saving.value = true
-  try {
-    await addOrUpdate({
-      external_id: String(route.params.id),
-      source: 'tmdb',
-      type: 'series',
-      status: formStatus.value,
-      rating: formStatus.value === 'watched' ? formRating.value : null,
-      review: formReview.value.trim() || null,
-    })
-    listEntry.value = await fetchStatus(String(route.params.id))
-    showForm.value = false
-  } finally {
-    saving.value = false
-  }
-}
-
-const removeFromList = async () => {
-  if (!listEntry.value) return
-  await remove(listEntry.value.media_id)
-  listEntry.value = null
-  formStatus.value = 'plan_to_watch'
-  formRating.value = null
-  formReview.value = ''
-}
-
-const startEdit = () => {
-  if (listEntry.value) {
-    formStatus.value = listEntry.value.status
-    formRating.value = listEntry.value.rating
-    formReview.value = listEntry.value.review ?? ''
-  }
-  showForm.value = true
-}
 </script>
 
 <template>
@@ -272,60 +210,8 @@ const startEdit = () => {
         </div>
 
         <!-- List actions -->
-        <div v-if="isAuthenticated" class="mt-10 pt-8 border-t border-default">
-          <div v-if="listEntry && !showForm" class="flex flex-wrap items-center gap-4">
-            <UBadge :color="listEntry.status === 'watched' ? 'success' : 'info'" size="lg">
-              {{ listEntry.status === 'watched' ? 'Watched' : 'Plan to watch' }}
-            </UBadge>
-            <span v-if="listEntry.rating" class="flex items-center gap-1.5 font-semibold">
-              <UIcon name="i-lucide-star" class="size-4 text-yellow-400 fill-yellow-400" />
-              {{ listEntry.rating }}/10
-            </span>
-            <p v-if="listEntry.review" class="text-muted text-sm italic flex-1 truncate">
-              "{{ listEntry.review }}"
-            </p>
-            <div class="flex gap-2 ml-auto">
-              <UButton size="sm" variant="soft" color="neutral" @click="startEdit">Edit</UButton>
-              <UButton size="sm" variant="ghost" color="error" @click="removeFromList">Remove</UButton>
-            </div>
-          </div>
-
-          <div v-else>
-            <h3 class="text-base font-semibold mb-4">
-              {{ listEntry ? 'Edit list entry' : 'Add to your list' }}
-            </h3>
-            <div class="flex flex-col gap-4 max-w-sm">
-              <USelect
-                v-model="formStatus"
-                :items="[
-                  { label: 'Plan to watch', value: 'plan_to_watch' },
-                  { label: 'Watched', value: 'watched' },
-                ]"
-                value-key="value"
-                label-key="label"
-              />
-              <div v-if="formStatus === 'watched'" class="flex items-center gap-3">
-                <label class="text-sm text-muted shrink-0">Rating (1–10)</label>
-                <UInput
-                  v-model.number="formRating"
-                  type="number"
-                  :min="1"
-                  :max="10"
-                  placeholder="e.g. 8"
-                  class="w-24"
-                />
-              </div>
-              <UTextarea v-model="formReview" placeholder="Write a review (optional)" :rows="3" />
-              <div class="flex gap-2">
-                <UButton :loading="saving" @click="submitListForm">
-                  {{ listEntry ? 'Update' : 'Add to list' }}
-                </UButton>
-                <UButton v-if="listEntry" variant="ghost" color="neutral" @click="showForm = false">
-                  Cancel
-                </UButton>
-              </div>
-            </div>
-          </div>
+        <div class="mt-10 pt-8 border-t border-default">
+          <MediaListActions :external-id="String(route.params.id)" media-type="series" />
         </div>
 
         <!-- Details grid -->
