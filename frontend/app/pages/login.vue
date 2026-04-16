@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center justify-center py-20 px-4 transition-colors duration-300">
+  <div class="flex-1 flex items-center justify-center py-20 px-4 transition-colors duration-300">
     <div class="w-full max-w-md">
       <div class="text-center mb-8">
         <h1 class="text-4xl font-bold text-zinc-900 dark:text-white tracking-tight mb-2">
