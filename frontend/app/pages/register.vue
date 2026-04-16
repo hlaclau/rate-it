@@ -12,7 +12,7 @@
       <!-- Card -->
       <div class="bg-white dark:bg-zinc-900/50 backdrop-blur-xl border border-zinc-200 dark:border-zinc-800 p-8 rounded-2xl shadow-xl dark:shadow-2xl w-full">
         <UForm :state="state" :validate="validate" class="w-full" @submit="onSubmit">
-          
+
           <div class="mb-6">
             <UFormGroup label="Username" name="username" class="w-full">
               <UInput v-model="state.username" placeholder="curator01" icon="i-lucide-user" size="lg" variant="outline"
@@ -29,17 +29,30 @@
 
           <div class="mb-6">
             <UFormGroup label="Password" name="password" class="w-full">
-              <UInput v-model="state.password" type="password" placeholder="••••••••" icon="i-lucide-lock" size="lg"
-                variant="outline" color="primary" class="w-full" />
+              <UInput v-model="state.password" :type="showPassword ? 'text' : 'password'" placeholder="••••••••"
+                icon="i-lucide-lock" size="lg" variant="outline" color="primary" class="w-full">
+                <template #trailing>
+                  <UButton :icon="showPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'" color="neutral" variant="ghost"
+                    size="xs" tabindex="-1" @click="showPassword = !showPassword" />
+                </template>
+              </UInput>
             </UFormGroup>
           </div>
 
-          <UFormGroup label="Confirm Password" name="confirmPassword" class="w-full">
-            <UInput v-model="state.confirmPassword" type="password" placeholder="••••••••" icon="i-lucide-shield-check"
-              size="lg" variant="outline" color="primary" class="w-full" />
-          </UFormGroup>
+          <div class="mb-6">
+            <UFormGroup label="Confirm Password" name="confirmPassword" class="w-full">
+              <UInput v-model="state.confirmPassword" :type="showConfirmPassword ? 'text' : 'password'"
+                placeholder="••••••••" icon="i-lucide-shield-check" size="lg" variant="outline" color="primary"
+                class="w-full">
+                <template #trailing>
+                  <UButton :icon="showConfirmPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'" color="neutral"
+                    variant="ghost" size="xs" tabindex="-1" @click="showConfirmPassword = !showConfirmPassword" />
+                </template>
+              </UInput>
+            </UFormGroup>
+          </div>
 
-          <UButton type="submit" block size="lg" color="primary" :loading="loading" class="mt-8 transition-transform hover:scale-[1.02] active:scale-[0.98]">
+          <UButton type="submit" block size="lg" color="primary" :loading="loading" class="mt-2 transition-transform hover:scale-[1.02] active:scale-[0.98]">
             Create Account
           </UButton>
         </UForm>
@@ -58,6 +71,8 @@
 <script setup lang="ts">
 const { register } = useAuth()
 const loading = ref(false)
+const showPassword = ref(false)
+const showConfirmPassword = ref(false)
 
 const state = reactive({
   username: '',
@@ -69,12 +84,18 @@ const state = reactive({
 const validate = (state: any) => {
   const errors = []
   if (!state.username) errors.push({ path: 'username', message: 'Required' })
-  if (!state.email) errors.push({ path: 'email', message: 'Required' })
-  if (state.password !== state.confirmPassword) {
-    errors.push({ path: 'confirmPassword', message: 'Passwords do not match' })
+  if (!state.email) {
+    errors.push({ path: 'email', message: 'Required' })
+  } else if (!state.email.includes('@') || !state.email.includes('.')) {
+    errors.push({ path: 'email', message: 'Enter a valid email address' })
   }
-  if (state.password?.length < 8) {
+  if (!state.password) {
+    errors.push({ path: 'password', message: 'Required' })
+  } else if (state.password.length < 8) {
     errors.push({ path: 'password', message: 'Must be at least 8 characters' })
+  }
+  if (state.password && state.password !== state.confirmPassword) {
+    errors.push({ path: 'confirmPassword', message: 'Passwords do not match' })
   }
   return errors
 }
@@ -83,11 +104,6 @@ async function onSubmit() {
   loading.value = true
   try {
     await register(state.username, state.email, state.password)
-    useToast().add({
-      title: 'Success!',
-      description: 'Account created. You can now login.',
-      color: 'success'
-    })
   } catch (err: any) {
     useToast().add({
       title: 'Registration failed',
@@ -98,4 +114,8 @@ async function onSubmit() {
     loading.value = false
   }
 }
+
+definePageMeta({
+  layout: false
+})
 </script>

@@ -16,7 +16,17 @@ useHead({
   ],
 })
 
-const { user, fetchMe, logout } = useAuth()
+const { user, fetchMe, logout, authInitialized } = useAuth()
+
+const userMenuItems = computed(() => [
+  [
+    { label: 'My List', icon: 'i-lucide-bookmark', to: '/list' },
+    { label: 'Settings', icon: 'i-lucide-settings', to: '/settings' },
+  ],
+  [
+    { label: 'Logout', icon: 'i-lucide-log-out', onSelect: logout },
+  ],
+])
 
 onMounted(() => {
   fetchMe()
@@ -65,13 +75,16 @@ useSeoMeta({
       <template #right>
         <UColorModeButton />
 
-        <template v-if="user">
-          <div class="flex items-center gap-3">
-            <span class="hidden sm:inline-block text-sm font-medium text-purple-200">
-              {{ user.username }}
-            </span>
-            <UButton label="Logout" color="purple" variant="soft" icon="i-lucide-log-out" @click="logout" />
-          </div>
+        <template v-if="!authInitialized">
+          <USkeleton class="h-8 w-20 rounded-lg" />
+        </template>
+        <template v-else-if="user">
+          <UDropdownMenu :items="userMenuItems">
+            <UButton color="purple" variant="soft" trailing-icon="i-lucide-chevron-down" size="sm">
+              <UIcon name="i-lucide-user" class="size-4" />
+              <span class="hidden sm:inline ml-1">{{ user.username }}</span>
+            </UButton>
+          </UDropdownMenu>
         </template>
         <template v-else>
           <!-- Desktop button -->

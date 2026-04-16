@@ -10,20 +10,23 @@
 
       <div
         class="bg-white dark:bg-zinc-900/50 backdrop-blur-xl border border-zinc-200 dark:border-zinc-800 p-8 rounded-2xl shadow-xl dark:shadow-2xl w-full">
-        <UForm :state="state" class="w-full" @submit="onSubmit">
+        <UForm :state="state" :validate="validate" class="w-full" @submit="onSubmit">
 
-          <!-- Email Field with Space -->
-          <div class="mb-10">
+          <div class="mb-6">
             <UFormGroup label="Email" name="email" class="w-full">
               <UInput v-model="state.email" placeholder="curator@midnight.com" icon="i-lucide-mail" size="lg"
                 variant="outline" color="primary" class="w-full" />
             </UFormGroup>
           </div>
 
-          <!-- Password Field -->
           <UFormGroup label="Password" name="password" class="w-full">
-            <UInput v-model="state.password" type="password" placeholder="••••••••" icon="i-lucide-lock" size="lg"
-              variant="outline" color="primary" class="w-full" />
+            <UInput v-model="state.password" :type="showPassword ? 'text' : 'password'" placeholder="••••••••"
+              icon="i-lucide-lock" size="lg" variant="outline" color="primary" class="w-full">
+              <template #trailing>
+                <UButton :icon="showPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'" color="neutral" variant="ghost"
+                  size="xs" tabindex="-1" @click="showPassword = !showPassword" />
+              </template>
+            </UInput>
           </UFormGroup>
 
           <UButton type="submit" block size="lg" color="primary" :loading="loading"
@@ -47,11 +50,25 @@
 <script setup lang="ts">
 const { login } = useAuth()
 const loading = ref(false)
+const showPassword = ref(false)
 
 const state = reactive({
   email: '',
   password: ''
 })
+
+const validate = (state: any) => {
+  const errors = []
+  if (!state.email) {
+    errors.push({ path: 'email', message: 'Required' })
+  } else if (!state.email.includes('@') || !state.email.includes('.')) {
+    errors.push({ path: 'email', message: 'Enter a valid email address' })
+  }
+  if (!state.password) {
+    errors.push({ path: 'password', message: 'Required' })
+  }
+  return errors
+}
 
 async function onSubmit() {
   loading.value = true

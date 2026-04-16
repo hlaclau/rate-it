@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -39,6 +40,11 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if msg := h.validateRegister(req); msg != "" {
+		h.writeError(w, msg, http.StatusBadRequest)
+		return
+	}
+
 	user, err := h.uc.Register(r.Context(), req.Username, req.Email, req.Password)
 	if err != nil {
 		if errors.Is(err, port.ErrUserAlreadyExists) {
@@ -49,9 +55,9 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusCreated)
 	user.PasswordHash = ""
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(user)
 }
 
@@ -64,6 +70,11 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 	var req loginRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		h.writeError(w, "invalid request", http.StatusBadRequest)
+		return
+	}
+
+	if msg := h.validateLogin(req); msg != "" {
+		h.writeError(w, msg, http.StatusBadRequest)
 		return
 	}
 
@@ -163,6 +174,32 @@ func (h *AuthHandler) setAuthCookies(w http.ResponseWriter, access, refresh stri
 		SameSite: http.SameSiteLaxMode,
 		Expires:  time.Now().Add(7 * 24 * time.Hour),
 	})
+}
+
+func (h *AuthHandler) validateRegister(req registerRequest) string {
+	if strings.TrimSpace(req.Username) == "" {
+		return "username is required"
+	}
+	if strings.TrimSpace(req.Email) == "" {
+		return "email is required"
+	}
+	if !strings.Contains(req.Email, "@") || !strings.Contains(req.Email, ".") {
+		return "invalid email format"
+	}
+	if len(req.Password) < 8 {
+		return "password must be at least 8 characters"
+	}
+	return ""
+}
+
+func (h *AuthHandler) validateLogin(req loginRequest) string {
+	if strings.TrimSpace(req.Email) == "" {
+		return "email is required"
+	}
+	if strings.TrimSpace(req.Password) == "" {
+		return "password is required"
+	}
+	return ""
 }
 
 func (h *AuthHandler) writeError(w http.ResponseWriter, msg string, code int) {
