@@ -1,0 +1,27 @@
+meta {
+  name: discover (merged into search)
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{base_url}}/media/search
+  body: none
+  auth: none
+}
+
+docs {
+  The /media/discover route has been merged into /media/search.
+  Omit `q` to use discover mode (sort, year range, rating range).
+  Add `q` to use text search mode (sort/year/rating params are ignored by TMDB).
+}
+
+params:query {
+  ~type: movie
+  ~sort_by: popularity.desc
+  ~year_from: 2010
+  ~year_to: 2023
+  ~vote_average_min: 7.0
+  ~vote_average_max: 10.0
+  ~page: 1
+}

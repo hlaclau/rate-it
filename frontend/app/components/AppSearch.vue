@@ -1,26 +1,38 @@
 <script setup lang="ts">
-interface MovieSearchResult {
+interface MediaSearchResult {
   id: number
-  title: string
+  media_type: 'movie' | 'tv' | 'person'
+  title?: string
+  name?: string
   poster_path: string | null
-  release_date: string
+  release_date?: string
+  first_air_date?: string
   overview: string
   vote_average: number
 }
 
 interface SearchResponse {
-  results: MovieSearchResult[]
+  results: MediaSearchResult[]
 }
 
 const config = useRuntimeConfig()
 const router = useRouter()
 
 const query = ref('')
-const results = ref<MovieSearchResult[]>([])
+const results = ref<MediaSearchResult[]>([])
 const isOpen = ref(false)
 const isLoading = ref(false)
+const inputRef = ref<HTMLInputElement | null>(null)
 
 let debounceTimer: ReturnType<typeof setTimeout> | null = null
+
+const mediaResults = computed(() =>
+  results.value.filter((r) => r.media_type === 'movie' || r.media_type === 'tv').slice(0, 6)
+)
+
+function displayTitle(r: MediaSearchResult) { return r.title ?? r.name ?? '' }
+function displayYear(r: MediaSearchResult) { return (r.release_date ?? r.first_air_date ?? '').slice(0, 4) }
+function mediaRoute(r: MediaSearchResult) { return r.media_type === 'tv' ? `/series/${r.id}` : `/movie/${r.id}` }
 
 watch(query, (q) => {
   if (debounceTimer) clearTimeout(debounceTimer)
@@ -36,7 +48,7 @@ watch(query, (q) => {
         `${config.public.apiBase}/media/search?q=${encodeURIComponent(q)}`
       )
       results.value = data.results
-      isOpen.value = data.results.length > 0
+      isOpen.value = mediaResults.value.length > 0
     } catch {
       results.value = []
       isOpen.value = false
@@ -46,11 +58,11 @@ watch(query, (q) => {
   }, 300)
 })
 
-function selectMovie(id: number) {
+function selectMedia(result: MediaSearchResult) {
   isOpen.value = false
   query.value = ''
   results.value = []
-  router.push(`/movie/${id}`)
+  router.push(mediaRoute(result))
 }
 
 function close() {
@@ -65,52 +77,74 @@ router.afterEach(() => {
 </script>
 
 <template>
-  <div class="relative w-full max-w-sm hidden sm:block">
+  <div class="relative w-full max-w-xs hidden sm:block">
     <UInput
+      ref="inputRef"
       v-model="query"
       icon="i-lucide-search"
-      placeholder="Search movies..."
+      placeholder="Search…"
       :loading="isLoading"
-      @focus="isOpen = results.length > 0"
+      size="sm"
+      @focus="isOpen = mediaResults.length > 0"
     />
 
-    <div
-      v-if="isOpen"
-      class="absolute top-full mt-1 w-full z-50 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg overflow-hidden"
+    <Transition
+      enter-active-class="transition duration-150 ease-out"
+      enter-from-class="opacity-0 translate-y-1"
+      enter-to-class="opacity-100 translate-y-0"
+      leave-active-class="transition duration-100 ease-in"
+      leave-from-class="opacity-100 translate-y-0"
+      leave-to-class="opacity-0 translate-y-1"
     >
-      <ul>
-        <li
-          v-for="movie in results.slice(0, 8)"
-          :key="movie.id"
-          class="flex items-center gap-3 px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer"
-          @click="selectMovie(movie.id)"
-          @mousedown.prevent
-        >
-          <img
-            v-if="movie.poster_path"
-            :src="`https://image.tmdb.org/t/p/w92${movie.poster_path}`"
-            :alt="movie.title"
-            class="w-8 h-12 object-cover rounded flex-shrink-0"
-          />
-          <div
-            v-else
-            class="w-8 h-12 bg-gray-200 dark:bg-gray-700 rounded flex items-center justify-center flex-shrink-0"
+      <div
+        v-if="isOpen"
+        class="absolute top-full mt-2 w-80 z-50 rounded-xl border border-default bg-elevated shadow-xl overflow-hidden"
+      >
+        <ul class="py-1">
+          <li
+            v-for="result in mediaResults"
+            :key="result.id"
+            class="group flex items-center gap-3 px-3 py-2.5 hover:bg-muted cursor-pointer transition-colors"
+            @click="selectMedia(result)"
+            @mousedown.prevent
           >
-            <UIcon name="i-lucide-film" class="text-gray-400 text-xs" />
-          </div>
-          <div class="min-w-0">
-            <p
-              class="text-sm font-medium text-gray-900 dark:text-white truncate"
-            >
-              {{ movie.title }}
-            </p>
-            <p class="text-xs text-gray-500 dark:text-gray-400">
-              {{ movie.release_date?.slice(0, 4) }}
-            </p>
-          </div>
-        </li>
-      </ul>
-    </div>
+            <!-- Poster -->
+            <div class="shrink-0 w-9 h-[54px] rounded-md overflow-hidden bg-muted">
+              <img
+                v-if="result.poster_path"
+                :src="`https://image.tmdb.org/t/p/w92${result.poster_path}`"
+                :alt="displayTitle(result)"
+                class="w-full h-full object-cover"
+              />
+              <div v-else class="w-full h-full flex items-center justify-center">
+                <UIcon name="i-lucide-film" class="size-4 text-muted" />
+              </div>
+            </div>
+
+            <!-- Info -->
+            <div class="min-w-0 flex-1">
+              <p class="text-sm font-medium truncate group-hover:text-primary transition-colors">
+                {{ displayTitle(result) }}
+              </p>
+              <div class="flex items-center gap-1.5 mt-0.5">
+                <UBadge
+                  :color="result.media_type === 'tv' ? 'neutral' : 'primary'"
+                  variant="subtle"
+                  size="xs"
+                >
+                  {{ result.media_type === 'tv' ? 'Series' : 'Movie' }}
+                </UBadge>
+                <span v-if="displayYear(result)" class="text-xs text-muted">{{ displayYear(result) }}</span>
+                <span v-if="result.vote_average" class="flex items-center gap-0.5 text-xs text-muted ml-auto">
+                  <UIcon name="i-lucide-star" class="size-3 text-yellow-400 fill-yellow-400" />
+                  {{ result.vote_average.toFixed(1) }}
+                </span>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </Transition>
 
     <div v-if="isOpen" class="fixed inset-0 z-40" @click="close" />
   </div>
