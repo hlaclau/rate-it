@@ -38,6 +38,20 @@ useSeoMeta({
         >
           Rate<span class="text-purple-500">-</span>It
         </NuxtLink>
+        <nav class="hidden sm:flex items-center gap-1 ml-6">
+          <UButton to="/discover" color="neutral" variant="ghost" size="sm">
+            Discover
+          </UButton>
+          <UButton to="/discover?sort_by=popularity.desc" color="neutral" variant="ghost" size="sm">
+            Popular
+          </UButton>
+          <UButton to="/discover?sort_by=vote_average.desc&vote_average_min=7.0" color="neutral" variant="ghost" size="sm">
+            Best Rated
+          </UButton>
+          <UButton :to="`/discover?sort_by=release_date.desc&year_from=${new Date().getFullYear() - 1}`" color="neutral" variant="ghost" size="sm">
+            New Releases
+          </UButton>
+        </nav>
       </template>
 
       <AppSearch />

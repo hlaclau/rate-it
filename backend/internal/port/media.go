@@ -24,7 +24,7 @@ type MediaRepository interface {
 type MediaFetcher interface {
 	FetchMovie(id string) (raw []byte, m *domain.Media, err error)
 	FetchSeries(id string) (raw []byte, m *domain.Media, err error)
-	SearchMedia(query string) ([]byte, error)
+	FetchMedia(params domain.MediaParams) ([]byte, error)
 }
 
 // MediaCache is a key/value store for raw media payloads.

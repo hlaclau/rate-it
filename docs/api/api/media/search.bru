@@ -1,0 +1,23 @@
+meta {
+  name: search
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{base_url}}/media/search
+  body: none
+  auth: none
+}
+
+params:query {
+  ~q: batman
+  ~type: movie
+  ~sort_by: popularity.desc
+  ~year_from: 2010
+  ~year_to: 2023
+  ~vote_average_min: 7.0
+  ~vote_average_max: 10.0
+  ~include_adult: false
+  ~page: 1
+}
