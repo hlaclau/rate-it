@@ -4,6 +4,10 @@ export default defineNuxtConfig({
 
   modules: ['@nuxt/eslint', '@nuxt/ui'],
 
+  colorMode: {
+    preference: 'system',
+  },
+
   runtimeConfig: {
     public: {
       apiBase: 'http://localhost:8080',
