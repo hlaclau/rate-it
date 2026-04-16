@@ -192,7 +192,6 @@ func (h *AuthHandler) validateRegister(req registerRequest) string {
 		return "password must be at least 8 characters"
 	}
 	
-	// Complex password validation
 	var hasUpper, hasLower, hasDigit bool
 	for _, char := range req.Password {
 		switch {

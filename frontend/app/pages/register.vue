@@ -1,7 +1,6 @@
 <template>
   <div class="flex-1 flex items-center justify-center py-20 px-4 transition-colors duration-300">
     <div class="w-full max-w-md">
-      <!-- Header -->
       <div class="text-center mb-8">
         <h1 class="text-4xl font-bold text-zinc-900 dark:text-white tracking-tight mb-2">
           Rate<span class="text-purple-600 dark:text-purple-500">-It</span>
@@ -9,7 +8,6 @@
         <p class="text-zinc-500 dark:text-zinc-400">Create your account.</p>
       </div>
 
-      <!-- Card -->
       <div class="bg-white dark:bg-zinc-900/50 backdrop-blur-xl border border-zinc-200 dark:border-zinc-800 p-8 rounded-2xl shadow-xl dark:shadow-2xl w-full">
         <UForm :state="state" :validate="validate" class="w-full" @submit="onSubmit" @error="onError">
 

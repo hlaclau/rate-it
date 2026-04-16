@@ -79,7 +79,7 @@ func (uc *MediaUseCase) get(
 	mediaType domain.MediaType,
 	fetch func(string) ([]byte, *domain.Media, error),
 ) ([]byte, error) {
-	key := fmt.Sprintf("media:tmdb:%s:%s", mediaType, id)
+	key := fmt.Sprintf("media:tmdb:%s:%s:v2", mediaType, id)
 
 	raw, err := uc.cache.Get(ctx, key)
 	if err == nil {
