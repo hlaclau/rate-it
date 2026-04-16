@@ -79,33 +79,26 @@ useSeoMeta({
         <UContainer>
           <div class="flex items-center h-14 gap-6">
 
-            <!-- Logo -->
             <NuxtLink to="/" class="shrink-0 text-lg font-bold tracking-tight">
               Rate<span class="text-primary">-It</span>
             </NuxtLink>
 
-            <!-- Nav -->
             <nav class="hidden md:flex items-center gap-1">
               <UDropdownMenu :items="discoverItems">
-                <button
-                  class="flex items-center gap-1 px-3 py-1.5 text-sm font-medium rounded-md transition-colors"
+                <button class="flex items-center gap-1 px-3 py-1.5 text-sm font-medium rounded-md transition-colors"
                   :class="isDiscoverActive
                     ? 'text-primary bg-primary/10'
-                    : 'text-muted hover:text-default hover:bg-elevated'"
-                >
+                    : 'text-muted hover:text-default hover:bg-elevated'">
                   Discover
                   <UIcon name="i-lucide-chevron-down" class="size-3.5 opacity-60" />
                 </button>
               </UDropdownMenu>
             </nav>
 
-            <!-- Spacer -->
             <div class="flex-1" />
 
-            <!-- Search -->
             <AppSearch />
 
-            <!-- Controls -->
             <div class="flex items-center gap-2 shrink-0">
               <UColorModeButton />
 
@@ -146,9 +139,13 @@ useSeoMeta({
             </div>
             <div class="flex flex-col md:items-end gap-4">
               <div class="flex items-center gap-6">
-                <NuxtLink to="/discover" class="text-sm font-medium text-muted hover:text-primary transition-colors">Discover</NuxtLink>
-                <NuxtLink to="/list" class="text-sm font-medium text-muted hover:text-primary transition-colors">My List</NuxtLink>
-                <a href="https://github.com/hlaclau/rate-it" target="_blank" class="text-muted hover:text-default transition-colors">
+                <NuxtLink to="/discover" class="text-sm font-medium text-muted hover:text-primary transition-colors">
+                  Discover
+                </NuxtLink>
+                <NuxtLink to="/list" class="text-sm font-medium text-muted hover:text-primary transition-colors">My List
+                </NuxtLink>
+                <a href="https://github.com/hlaclau/rate-it" target="_blank"
+                  class="text-muted hover:text-default transition-colors">
                   <UIcon name="i-lucide-github" class="size-5" />
                 </a>
               </div>

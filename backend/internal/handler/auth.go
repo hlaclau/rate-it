@@ -191,6 +191,30 @@ func (h *AuthHandler) validateRegister(req registerRequest) string {
 	if len(req.Password) < 8 {
 		return "password must be at least 8 characters"
 	}
+	
+	// Complex password validation
+	var hasUpper, hasLower, hasDigit bool
+	for _, char := range req.Password {
+		switch {
+		case char >= 'A' && char <= 'Z':
+			hasUpper = true
+		case char >= 'a' && char <= 'z':
+			hasLower = true
+		case char >= '0' && char <= '9':
+			hasDigit = true
+		}
+	}
+
+	if !hasUpper {
+		return "password must contain at least one uppercase letter"
+	}
+	if !hasLower {
+		return "password must contain at least one lowercase letter"
+	}
+	if !hasDigit {
+		return "password must contain at least one number"
+	}
+
 	return ""
 }
 
