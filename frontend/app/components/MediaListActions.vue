@@ -24,6 +24,7 @@ const formStatus = ref<'watched' | 'plan_to_watch'>('plan_to_watch')
 const formRating = ref<number | null>(null)
 const formReview = ref('')
 const saving = ref(false)
+const hoverRating = ref(0) // Added for star hover effect
 
 const openEdit = () => {
   if (listEntry.value) {
@@ -109,41 +110,91 @@ const confirmRemove = async () => {
     <!-- Add / Edit modal -->
     <UModal v-model:open="editOpen" :title="listEntry ? 'Edit list entry' : 'Add to your list'" :description="listEntry ? 'Update your status, rating or review.' : 'Track this title in your personal list.'">
       <template #body>
-        <div class="flex flex-col gap-5">
-          <UFormGroup label="Status">
-            <USelect
-              v-model="formStatus"
-              :items="[
-                { label: 'Plan to watch', value: 'plan_to_watch' },
-                { label: 'Watched', value: 'watched' },
-              ]"
-              value-key="value"
-              label-key="label"
-            />
-          </UFormGroup>
-
-          <UFormGroup v-if="formStatus === 'watched'" label="Rating">
-            <div class="flex items-center gap-3">
-              <UInput
-                v-model.number="formRating"
-                type="number"
-                :min="1"
-                :max="10"
-                placeholder="1 – 10"
-                class="w-28"
-              />
-              <span class="text-sm text-muted">out of 10</span>
+        <div class="flex flex-col gap-8 items-center text-center py-4">
+          
+          <!-- Status Selection -->
+          <div class="w-full max-w-sm space-y-3">
+            <p class="text-sm font-medium text-default">Status</p>
+            <div class="flex justify-center p-1 bg-muted rounded-xl border border-default">
+              <button
+                v-for="s in [
+                  { label: 'Plan to Watch', value: 'plan_to_watch', icon: 'i-lucide-clock' },
+                  { label: 'Watched', value: 'watched', icon: 'i-lucide-check-circle' }
+                ]"
+                :key="s.value"
+                class="flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg text-sm font-medium transition-all"
+                :class="formStatus === s.value 
+                  ? 'bg-primary text-white shadow-sm ring-1 ring-primary-600' 
+                  : 'text-muted hover:text-default hover:bg-default'"
+                @click="formStatus = s.value as any"
+              >
+                <UIcon :name="s.icon" class="size-4" />
+                {{ s.label }}
+              </button>
             </div>
-          </UFormGroup>
+          </div>
 
-          <UFormGroup label="Review" hint="Optional">
+          <!-- Rating -->
+          <div v-if="formStatus === 'watched'" class="w-full max-w-sm space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+            <p class="text-sm font-medium text-default">Your Rating</p>
+            <div class="flex flex-col items-center gap-4">
+              <div class="flex items-center gap-2">
+                <UInput
+                  v-model.number="formRating"
+                  type="number"
+                  :min="1"
+                  :max="10"
+                  size="xl"
+                  class="w-24 text-center [&_input]:text-center [&_input]:font-bold [&_input]:text-xl"
+                  variant="outline"
+                  color="primary"
+                  placeholder="—"
+                />
+                <span class="text-xl font-bold text-muted">/ 10</span>
+              </div>
+              
+              <!-- Interactive Stars -->
+              <div class="flex gap-1">
+                <button
+                  v-for="i in 10"
+                  :key="i"
+                  type="button"
+                  class="group p-0.5 focus:outline-none"
+                  @click="formRating = i"
+                  @mouseenter="hoverRating = i"
+                  @mouseleave="hoverRating = 0"
+                >
+                  <UIcon 
+                    :name="i <= (hoverRating || formRating || 0) ? 'i-lucide-star' : 'i-lucide-star'"
+                    class="size-6 transition-all duration-200"
+                    :class="[
+                      i <= (hoverRating || formRating || 0) 
+                        ? 'text-yellow-400 fill-yellow-400 scale-110' 
+                        : 'text-zinc-300 dark:text-zinc-700 hover:scale-105',
+                      i <= hoverRating && i > (formRating || 0) ? 'opacity-50' : ''
+                    ]"
+                  />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Review -->
+          <div class="w-full max-w-sm space-y-3">
+            <div class="flex items-center justify-center gap-1.5 text-sm font-medium text-default">
+              <span>Review</span>
+              <span class="text-xs text-muted font-normal">(optional)</span>
+            </div>
             <UTextarea
               v-model="formReview"
-              placeholder="Write a short review…"
+              placeholder="What did you think? Share your thoughts..."
               :rows="4"
               autoresize
+              class="w-full [&_textarea]:text-center [&_textarea]:resize-none"
+              variant="outline"
             />
-          </UFormGroup>
+          </div>
+
         </div>
       </template>
 

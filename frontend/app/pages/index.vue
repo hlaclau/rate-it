@@ -18,6 +18,7 @@ const primaryLinks = computed(() => {
         color: 'neutral',
         variant: 'ghost',
         to: '/discover',
+        icon: 'i-lucide-globe',
       },
     ]
   }
@@ -35,6 +36,7 @@ const primaryLinks = computed(() => {
       color: 'neutral',
       variant: 'ghost',
       to: '/discover',
+      icon: 'i-lucide-globe',
     },
   ]
 })
