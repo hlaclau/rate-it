@@ -8,7 +8,7 @@
           size: 'xl',
           color: 'primary',
           variant: 'solid',
-        }
+        },
       ]"
     >
       <template #title>
@@ -22,18 +22,21 @@
         {
           icon: 'i-lucide-notebook-pen',
           title: 'Log your watches',
-          description: 'Keep track of every film you\'ve seen, when you watched it, and what you thought.',
+          description:
+            'Keep track of every film you\'ve seen, when you watched it, and what you thought.',
         },
         {
           icon: 'i-lucide-star',
           title: 'Rate & review',
-          description: 'Score films your way and write reviews the community can discover.',
+          description:
+            'Score films your way and write reviews the community can discover.',
         },
         {
           icon: 'i-lucide-users',
           title: 'Join the conversation',
-          description: 'See what friends are watching, follow film lovers, and build your taste profile.',
-        }
+          description:
+            'See what friends are watching, follow film lovers, and build your taste profile.',
+        },
       ]"
     />
 
@@ -47,7 +50,7 @@
             size: 'xl',
             color: 'primary',
             variant: 'solid',
-          }
+          },
         ]"
       />
     </UPageSection>
