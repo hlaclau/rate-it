@@ -86,8 +86,8 @@ func (c *Client) FetchSeries(id string) ([]byte, *domain.Media, error) {
 	return raw, m, nil
 }
 
-func (c *Client) SearchMovies(query string) ([]byte, error) {
-	return c.get("/search/movie?query=" + url.QueryEscape(query) + "&page=1")
+func (c *Client) SearchMedia(query string) ([]byte, error) {
+	return c.get("/search/multi?query=" + url.QueryEscape(query) + "&page=1")
 }
 
 func (c *Client) get(path string) ([]byte, error) {

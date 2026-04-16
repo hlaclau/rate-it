@@ -20,7 +20,7 @@ func NewMediaHandler(uc *usecase.MediaUseCase) *MediaHandler {
 func (h *MediaHandler) Routes(r chi.Router) {
 	r.Get("/media/movie/{id}", h.GetMovie)
 	r.Get("/media/series/{id}", h.GetSeries)
-	r.Get("/media/search", h.SearchMovies)
+	r.Get("/media/search", h.SearchMedia)
 }
 
 func (h *MediaHandler) GetMovie(w http.ResponseWriter, r *http.Request) {
@@ -45,9 +45,9 @@ func (h *MediaHandler) GetSeries(w http.ResponseWriter, r *http.Request) {
 	w.Write(raw)
 }
 
-func (h *MediaHandler) SearchMovies(w http.ResponseWriter, r *http.Request) {
+func (h *MediaHandler) SearchMedia(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.Query().Get("q")
-	raw, err := h.uc.SearchMovies(r.Context(), q)
+	raw, err := h.uc.SearchMedia(r.Context(), q)
 	if err != nil {
 		writeError(w, err)
 		return

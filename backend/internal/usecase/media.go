@@ -32,12 +32,12 @@ func (uc *MediaUseCase) GetSeries(ctx context.Context, id string) ([]byte, error
 	return uc.get(ctx, id, domain.TypeSeries, uc.fetcher.FetchSeries)
 }
 
-func (uc *MediaUseCase) SearchMovies(ctx context.Context, query string) ([]byte, error) {
+func (uc *MediaUseCase) SearchMedia(ctx context.Context, query string) ([]byte, error) {
 	if query == "" {
 		return []byte(`{"results":[]}`), nil
 	}
 
-	key := fmt.Sprintf("search:tmdb:movie:%s", strings.ToLower(strings.TrimSpace(query)))
+	key := fmt.Sprintf("search:tmdb:multi:%s", strings.ToLower(strings.TrimSpace(query)))
 
 	raw, err := uc.cache.Get(ctx, key)
 	if err == nil {
@@ -47,7 +47,7 @@ func (uc *MediaUseCase) SearchMovies(ctx context.Context, query string) ([]byte,
 		return nil, err
 	}
 
-	raw, err = uc.fetcher.SearchMovies(query)
+	raw, err = uc.fetcher.SearchMedia(query)
 	if err != nil {
 		return nil, err
 	}
