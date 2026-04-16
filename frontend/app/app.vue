@@ -2,21 +2,23 @@
 useHead({
   htmlAttrs: {
     lang: 'en',
-    class: 'dark'
+    class: 'dark',
   },
-  meta: [
-    { name: 'viewport', content: 'width=device-width, initial-scale=1' }
-  ],
+  meta: [{ name: 'viewport', content: 'width=device-width, initial-scale=1' }],
   link: [
     { rel: 'icon', href: '/favicon.ico' },
     { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
     { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
-    { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap' }
-  ]
+    {
+      rel: 'stylesheet',
+      href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap',
+    },
+  ],
 })
 
 const title = 'Rate-It — Track Films You Watch'
-const description = 'Track films you watch, log your ratings, and discover the Midnight Palace of cinema.'
+const description =
+  'Track films you watch, log your ratings, and discover the Midnight Palace of cinema.'
 
 useSeoMeta({
   title,
@@ -30,10 +32,15 @@ useSeoMeta({
   <UApp>
     <UHeader>
       <template #left>
-        <NuxtLink to="/" class="text-xl font-bold tracking-wider text-gray-900 dark:text-purple-50">
+        <NuxtLink
+          to="/"
+          class="text-xl font-bold tracking-wider text-gray-900 dark:text-purple-50"
+        >
           Rate<span class="text-purple-500">-</span>It
         </NuxtLink>
       </template>
+
+      <AppSearch />
 
       <template #right>
         <UColorModeButton />
