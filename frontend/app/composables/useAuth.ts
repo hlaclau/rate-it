@@ -2,6 +2,7 @@ export const useAuth = () => {
   const config = useRuntimeConfig()
   const user = useState<any>('auth-user', () => null)
   const isAuthenticated = computed(() => !!user.value)
+  const authInitialized = useState<boolean>('auth-initialized', () => false)
 
   // Custom fetch function that handles credentials (cookies) and refresh logic
   const apiFetch = $fetch.create({
@@ -17,7 +18,7 @@ export const useAuth = () => {
             method: 'POST',
             credentials: 'include'
           })
-          return $fetch(response.url, options)
+          return apiFetch(response.url, options)
         } catch (error) {
           user.value = null
           return navigateTo('/login')
@@ -27,12 +28,14 @@ export const useAuth = () => {
   })
 
   const login = async (email: string, password: string) => {
+    const route = useRoute()
     const data: any = await apiFetch('login', {
       method: 'POST',
       body: { email, password }
     })
     user.value = data
-    return navigateTo('/')
+    const redirectPath = route.query.redirect as string | undefined
+    return navigateTo(redirectPath || '/')
   }
 
   const register = async (username: string, email: string, password: string) => {
@@ -40,7 +43,7 @@ export const useAuth = () => {
       method: 'POST',
       body: { username, email, password }
     })
-    return navigateTo('/login')
+    await login(email, password)
   }
 
   const logout = async () => {
@@ -55,12 +58,15 @@ export const useAuth = () => {
       user.value = data
     } catch (e) {
       user.value = null
+    } finally {
+      authInitialized.value = true
     }
   }
 
   return {
     user,
     isAuthenticated,
+    authInitialized,
     login,
     register,
     logout,
