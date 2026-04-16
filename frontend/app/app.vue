@@ -16,6 +16,12 @@ useHead({
   ],
 })
 
+const { user, fetchMe, logout } = useAuth()
+
+onMounted(() => {
+  fetchMe()
+})
+
 const title = 'Rate-It — Track Films You Watch'
 const description =
   'Track films you watch, log your ratings, and discover the Midnight Palace of cinema.'
@@ -45,21 +51,21 @@ useSeoMeta({
       <template #right>
         <UColorModeButton />
 
-        <!-- Desktop button -->
-        <UButton
-          label="Sign In / Create Account"
-          color="primary"
-          variant="solid"
-          class="hidden sm:flex"
-        />
-        <!-- Mobile button -->
-        <UButton
-          icon="i-lucide-user"
-          color="primary"
-          variant="solid"
-          class="sm:hidden"
-          aria-label="Sign In / Create Account"
-        />
+        <template v-if="user">
+          <div class="flex items-center gap-3">
+            <span class="hidden sm:inline-block text-sm font-medium text-purple-200">
+              {{ user.username }}
+            </span>
+            <UButton label="Logout" color="purple" variant="soft" icon="i-lucide-log-out" @click="logout" />
+          </div>
+        </template>
+        <template v-else>
+          <!-- Desktop button -->
+          <UButton label="Sign In" color="purple" variant="solid" class="hidden sm:flex" to="/login" />
+          <!-- Mobile button -->
+          <UButton icon="i-lucide-user" color="purple" variant="solid" class="sm:hidden" aria-label="Sign In"
+            to="/login" />
+        </template>
       </template>
     </UHeader>
 
