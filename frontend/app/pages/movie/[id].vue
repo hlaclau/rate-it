@@ -226,6 +226,11 @@ const releaseDate = computed(() => {
           </p>
         </div>
 
+        <!-- List actions -->
+        <div class="mt-10 pt-8 border-t border-default">
+          <MediaListActions :external-id="String(route.params.id)" media-type="movie" />
+        </div>
+
         <!-- Details grid -->
         <div
           class="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-6 pt-8 border-t border-default"
