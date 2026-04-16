@@ -9,6 +9,7 @@ import (
 	"github.com/hlaclau/rate-it-api/internal/domain"
 	"github.com/hlaclau/rate-it-api/internal/port"
 	"github.com/jmoiron/sqlx"
+	"github.com/lib/pq"
 )
 
 type UserRepository struct {
@@ -29,8 +30,17 @@ func (r *UserRepository) Create(ctx context.Context, u *domain.User) error {
 		Scan(&u.ID, &u.CreatedAt)
 
 	if err != nil {
-		// Check for unique constraint violation (PostgreSQL)
-		// Usually we'd check the error code, but for simplicity:
+		var pqErr *pq.Error
+		if errors.As(err, &pqErr) && pqErr.Code == "23505" {
+			switch pqErr.Constraint {
+			case "users_email_key":
+				return port.ErrEmailAlreadyExists
+			case "users_username_key":
+				return port.ErrUsernameAlreadyExists
+			default:
+				return port.ErrUserAlreadyExists
+			}
+		}
 		return fmt.Errorf("create user: %w", err)
 	}
 
