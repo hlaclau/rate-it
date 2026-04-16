@@ -1,23 +1,24 @@
 <script setup lang="ts">
 const { user, logout } = useAuth()
 
-const links = computed(() => {
+const primaryLinks = computed(() => {
   if (user.value) {
     return [
       {
-        label: 'Go to Diary',
+        label: 'My List',
         size: 'xl',
         color: 'purple',
         variant: 'solid',
-        to: '/diary'
+        to: '/list',
+        icon: 'i-lucide-bookmark',
       },
       {
-        label: 'Logout',
+        label: 'Discover',
         size: 'xl',
-        color: 'gray',
+        color: 'neutral',
         variant: 'ghost',
-        click: logout
-      }
+        to: '/discover',
+      },
     ]
   }
   return [
@@ -26,46 +27,63 @@ const links = computed(() => {
       size: 'xl',
       color: 'purple',
       variant: 'solid',
-      to: '/register'
-    }
+      to: '/register',
+    },
+    {
+      label: 'Discover',
+      size: 'xl',
+      color: 'neutral',
+      variant: 'ghost',
+      to: '/discover',
+    },
   ]
 })
+
+const features = [
+  {
+    icon: 'i-lucide-list-checks',
+    title: 'Build your watchlist',
+    description: 'Add movies and series you want to watch. Keep track of what you\'ve already seen, all in one place.',
+  },
+  {
+    icon: 'i-lucide-star',
+    title: 'Rate & review',
+    description: 'Score every title out of 10 and write your own critic-style review to capture your thoughts.',
+  },
+  {
+    icon: 'i-lucide-compass',
+    title: 'Discover new titles',
+    description: 'Browse by genre, year, or rating to find your next favourite film or binge-worthy series.',
+  },
+  {
+    icon: 'i-lucide-tv-2',
+    title: 'Movies & series',
+    description: 'Rate-It covers both films and TV series so your entire watchlist lives in one place.',
+  },
+]
 </script>
 
 <template>
   <div>
     <UPageHero
-      description="Rate-It lets you keep a diary of every film you see, rate them, and share your taste with the community."
-      :links="links">
+      description="Your personal space to track every movie and series you watch, rate them, and write reviews you'll actually care about."
+      :links="primaryLinks"
+    >
       <template #title>
-        Track films you watch.<br />
-        Tell friends what's good.
+        Track what you watch.<br />
+        <span class="text-purple-500">Own your taste.</span>
       </template>
     </UPageHero>
 
-    <UPageSection :features="[
-      {
-        icon: 'i-lucide-notebook-pen',
-        title: 'Log your watches',
-        description:
-          'Keep track of every film you\'ve seen, when you watched it, and what you thought.',
-      },
-      {
-        icon: 'i-lucide-star',
-        title: 'Rate & review',
-        description:
-          'Score films your way and write reviews the community can discover.',
-      },
-      {
-        icon: 'i-lucide-users',
-        title: 'Join the conversation',
-        description:
-          'See what friends are watching, follow film lovers, and build your taste profile.',
-      },
-    ]" />
+    <UPageSection :features="features" />
 
     <UPageSection>
-      <UPageCTA title="Ready to start tracking?" variant="subtle" :links="links" />
+      <UPageCTA
+        title="Start tracking in seconds."
+        description="Free forever. No algorithm. Just your list."
+        variant="subtle"
+        :links="primaryLinks"
+      />
     </UPageSection>
   </div>
 </template>
