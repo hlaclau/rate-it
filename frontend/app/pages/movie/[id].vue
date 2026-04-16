@@ -28,7 +28,7 @@ const {
   status,
   error,
 } = useFetch<Movie>(
-  () => `${config.public.apiBase}/media/movie/${route.params.id}`
+  () => `${config.public.apiBase}/api/media/movie/${route.params.id}`
 )
 
 useSeoMeta({

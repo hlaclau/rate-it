@@ -45,7 +45,7 @@ watch(query, (q) => {
     isLoading.value = true
     try {
       const data = await $fetch<SearchResponse>(
-        `${config.public.apiBase}/media/search?q=${encodeURIComponent(q)}`
+        `${config.public.apiBase}/api/media/search?q=${encodeURIComponent(q)}`
       )
       results.value = data.results
       isOpen.value = mediaResults.value.length > 0

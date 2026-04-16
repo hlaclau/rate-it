@@ -101,7 +101,7 @@ const apiUrl = computed(() => {
   if (ratingRange.value[1] < 10) params.set('vote_average_max', ratingRange.value[1].toFixed(1))
   if (needsMinVotes.value) params.set('vote_count_min', String(MIN_VOTE_COUNT))
   params.set('page', String(page.value))
-  return `${config.public.apiBase}/media/search?${params.toString()}`
+  return `${config.public.apiBase}/api/media/search?${params.toString()}`
 })
 
 const { data, status } = useFetch<MediaResponse>(() => apiUrl.value)
