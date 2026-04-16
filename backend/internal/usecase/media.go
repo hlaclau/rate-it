@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/hlaclau/rate-it-api/internal/domain"
@@ -11,6 +12,7 @@ import (
 )
 
 const cacheTTL = 7 * 24 * time.Hour
+const searchCacheTTL = 24 * time.Hour
 
 type MediaUseCase struct {
 	repo    port.MediaRepository
@@ -28,6 +30,33 @@ func (uc *MediaUseCase) GetMovie(ctx context.Context, id string) ([]byte, error)
 
 func (uc *MediaUseCase) GetSeries(ctx context.Context, id string) ([]byte, error) {
 	return uc.get(ctx, id, domain.TypeSeries, uc.fetcher.FetchSeries)
+}
+
+func (uc *MediaUseCase) SearchMovies(ctx context.Context, query string) ([]byte, error) {
+	if query == "" {
+		return []byte(`{"results":[]}`), nil
+	}
+
+	key := fmt.Sprintf("search:tmdb:movie:%s", strings.ToLower(strings.TrimSpace(query)))
+
+	raw, err := uc.cache.Get(ctx, key)
+	if err == nil {
+		return raw, nil
+	}
+	if !errors.Is(err, port.ErrCacheMiss) {
+		return nil, err
+	}
+
+	raw, err = uc.fetcher.SearchMovies(query)
+	if err != nil {
+		return nil, err
+	}
+
+	if err = uc.cache.Set(ctx, key, raw, searchCacheTTL); err != nil {
+		return nil, err
+	}
+
+	return raw, nil
 }
 
 func (uc *MediaUseCase) get(
