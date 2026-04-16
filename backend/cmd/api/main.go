@@ -45,6 +45,11 @@ func main() {
 	}
 	defer redisClient.Close()
 
+	userRepo := repository.NewUserRepository(db)
+	sessionCache := adaptercache.NewSessionCache(redisClient)
+	authUseCase := usecase.NewAuthUseCase(userRepo, sessionCache)
+	authHandler := handler.NewAuthHandler(authUseCase)
+
 	mediaHandler := handler.NewMediaHandler(
 		usecase.NewMediaUseCase(
 			repository.NewMediaRepository(db),
@@ -57,17 +62,23 @@ func main() {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 	r.Use(cors.Handler(cors.Options{
-		AllowedOrigins: strings.Split(envOr("ALLOWED_ORIGINS", "http://localhost:3000"), ","),
-		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowedHeaders: []string{"Accept", "Authorization", "Content-Type"},
+		AllowedOrigins:   strings.Split(envOr("ALLOWED_ORIGINS", "http://localhost:3000"), ","),
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "Cookie"},
+		AllowCredentials: true,
 	}))
+
+	r.Use(handler.AuthMiddleware(authUseCase))
 
 	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("ok"))
 	})
 
-	mediaHandler.Routes(r)
+	r.Route("/api", func(r chi.Router) {
+		authHandler.Routes(r)
+		mediaHandler.Routes(r)
+	})
 
 	port := os.Getenv("PORT")
 	if port == "" {
