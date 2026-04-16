@@ -9,7 +9,6 @@ const props = defineProps<{
 const { isAuthenticated } = useAuth()
 const { addOrUpdate, remove, fetchStatus } = useList()
 
-// Entry state
 const listEntry = ref<ListEntry | null>(null)
 
 const loadStatus = async () => {
@@ -18,13 +17,12 @@ const loadStatus = async () => {
 
 watch(isAuthenticated, (v) => { if (v) loadStatus() }, { immediate: true })
 
-// Add / Edit modal
 const editOpen = ref(false)
 const formStatus = ref<'watched' | 'plan_to_watch'>('plan_to_watch')
 const formRating = ref<number | null>(null)
 const formReview = ref('')
 const saving = ref(false)
-const hoverRating = ref(0) // Added for star hover effect
+const hoverRating = ref(0)
 
 const openEdit = () => {
   if (listEntry.value) {
@@ -61,7 +59,6 @@ const submitForm = async () => {
   }
 }
 
-// Remove confirm modal
 const removeOpen = ref(false)
 const removing = ref(false)
 
@@ -81,7 +78,6 @@ const confirmRemove = async () => {
 <template>
   <div v-if="isAuthenticated">
 
-    <!-- Trigger area -->
     <div v-if="listEntry" class="flex flex-wrap items-center gap-3">
       <UBadge :color="listEntry.status === 'watched' ? 'success' : 'info'" size="lg">
         {{ listEntry.status === 'watched' ? 'Watched' : 'Plan to watch' }}
@@ -107,12 +103,10 @@ const confirmRemove = async () => {
       Add to list
     </UButton>
 
-    <!-- Add / Edit modal -->
     <UModal v-model:open="editOpen" :title="listEntry ? 'Edit list entry' : 'Add to your list'" :description="listEntry ? 'Update your status, rating or review.' : 'Track this title in your personal list.'">
       <template #body>
         <div class="flex flex-col gap-8 items-center text-center py-4">
           
-          <!-- Status Selection -->
           <div class="w-full max-w-sm space-y-3">
             <p class="text-sm font-medium text-default">Status</p>
             <div class="flex justify-center p-1 bg-muted rounded-xl border border-default">
@@ -134,7 +128,6 @@ const confirmRemove = async () => {
             </div>
           </div>
 
-          <!-- Rating -->
           <div v-if="formStatus === 'watched'" class="w-full max-w-sm space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
             <p class="text-sm font-medium text-default">Your Rating</p>
             <div class="flex flex-col items-center gap-4">
@@ -153,7 +146,6 @@ const confirmRemove = async () => {
                 <span class="text-xl font-bold text-muted">/ 10</span>
               </div>
               
-              <!-- Interactive Stars -->
               <div class="flex gap-1">
                 <button
                   v-for="i in 10"
@@ -173,13 +165,12 @@ const confirmRemove = async () => {
                         : 'text-zinc-300 dark:text-zinc-700 hover:scale-105',
                       i <= hoverRating && i > (formRating || 0) ? 'opacity-50' : ''
                     ]"
-                  />
+                   />
                 </button>
               </div>
             </div>
           </div>
 
-          <!-- Review -->
           <div class="w-full max-w-sm space-y-3">
             <div class="flex items-center justify-center gap-1.5 text-sm font-medium text-default">
               <span>Review</span>
@@ -208,7 +199,6 @@ const confirmRemove = async () => {
       </template>
     </UModal>
 
-    <!-- Remove confirmation modal -->
     <UModal v-model:open="removeOpen" title="Remove from list" description="This will remove the title from your list. You can always add it back later.">
       <template #footer>
         <div class="flex justify-end gap-2">

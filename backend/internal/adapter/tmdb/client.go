@@ -43,7 +43,7 @@ type seriesResponse struct {
 }
 
 func (c *Client) FetchMovie(id string) ([]byte, *domain.Media, error) {
-	raw, err := c.get("/movie/" + id)
+	raw, err := c.get("/movie/" + id + "?append_to_response=watch/providers")
 	if err != nil {
 		return nil, nil, err
 	}
@@ -65,7 +65,7 @@ func (c *Client) FetchMovie(id string) ([]byte, *domain.Media, error) {
 }
 
 func (c *Client) FetchSeries(id string) ([]byte, *domain.Media, error) {
-	raw, err := c.get("/tv/" + id)
+	raw, err := c.get("/tv/" + id + "?append_to_response=watch/providers")
 	if err != nil {
 		return nil, nil, err
 	}
