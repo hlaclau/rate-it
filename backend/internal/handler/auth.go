@@ -47,7 +47,9 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 
 	user, err := h.uc.Register(r.Context(), req.Username, req.Email, req.Password)
 	if err != nil {
-		if errors.Is(err, port.ErrUserAlreadyExists) {
+		if errors.Is(err, port.ErrEmailAlreadyExists) ||
+			errors.Is(err, port.ErrUsernameAlreadyExists) ||
+			errors.Is(err, port.ErrUserAlreadyExists) {
 			h.writeError(w, err.Error(), http.StatusConflict)
 			return
 		}
