@@ -7,11 +7,49 @@ const { list, listLoading, fetchList, remove } = useList()
 
 const activeFilter = ref<'all' | 'watched' | 'plan_to_watch'>('all')
 
-const filteredList = computed<ListEntry[]>(() =>
-  activeFilter.value === 'all'
+type SortValue = 'added_at_desc' | 'added_at_asc' | 'title_asc' | 'title_desc' | 'rating_desc' | 'rating_asc' | 'release_year_desc' | 'release_year_asc'
+const sortValue = ref<SortValue>('added_at_desc')
+
+const sortOptions: { label: string; value: SortValue }[] = [
+  { label: 'Date added (newest)', value: 'added_at_desc' },
+  { label: 'Date added (oldest)', value: 'added_at_asc' },
+  { label: 'Title A → Z', value: 'title_asc' },
+  { label: 'Title Z → A', value: 'title_desc' },
+  { label: 'Rating (highest)', value: 'rating_desc' },
+  { label: 'Rating (lowest)', value: 'rating_asc' },
+  { label: 'Year (newest)', value: 'release_year_desc' },
+  { label: 'Year (oldest)', value: 'release_year_asc' },
+]
+
+const filteredList = computed<ListEntry[]>(() => {
+  const items = activeFilter.value === 'all'
     ? list.value
     : list.value.filter(e => e.status === activeFilter.value)
-)
+
+  const lastUnderscore = sortValue.value.lastIndexOf('_')
+  const key = sortValue.value.slice(0, lastUnderscore)
+  const dir = sortValue.value.slice(lastUnderscore + 1)
+
+  return [...items].sort((a, b) => {
+    if (key === 'title') {
+      return dir === 'asc' ? a.title.localeCompare(b.title) : b.title.localeCompare(a.title)
+    }
+    if (key === 'rating') {
+      const ra = a.rating ?? (dir === 'asc' ? Infinity : -Infinity)
+      const rb = b.rating ?? (dir === 'asc' ? Infinity : -Infinity)
+      return dir === 'asc' ? ra - rb : rb - ra
+    }
+    if (key === 'release_year') {
+      const ya = a.release_year ?? (dir === 'asc' ? Infinity : -Infinity)
+      const yb = b.release_year ?? (dir === 'asc' ? Infinity : -Infinity)
+      return dir === 'asc' ? ya - yb : yb - ya
+    }
+    // added_at (default)
+    const da = new Date(a.added_at).getTime()
+    const db = new Date(b.added_at).getTime()
+    return dir === 'asc' ? da - db : db - da
+  })
+})
 
 onMounted(fetchList)
 
@@ -40,21 +78,31 @@ useSeoMeta({ title: 'My List — Rate It' })
   <UContainer class="py-10">
     <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
       <h1 class="text-3xl font-bold">My List</h1>
-      <div class="flex gap-2">
-        <UButton
-          v-for="f in [
-            { label: 'All', value: 'all' },
-            { label: 'Watched', value: 'watched' },
-            { label: 'Plan to watch', value: 'plan_to_watch' },
-          ]"
-          :key="f.value"
-          :variant="activeFilter === f.value ? 'solid' : 'ghost'"
-          color="neutral"
+      <div class="flex flex-wrap items-center gap-2">
+        <div class="flex gap-2">
+          <UButton
+            v-for="f in [
+              { label: 'All', value: 'all' },
+              { label: 'Watched', value: 'watched' },
+              { label: 'Plan to watch', value: 'plan_to_watch' },
+            ]"
+            :key="f.value"
+            :variant="activeFilter === f.value ? 'solid' : 'ghost'"
+            color="neutral"
+            size="sm"
+            @click="activeFilter = (f.value as 'all' | 'watched' | 'plan_to_watch')"
+          >
+            {{ f.label }}
+          </UButton>
+        </div>
+        <USelect
+          v-model="sortValue"
+          :items="sortOptions"
+          value-key="value"
+          label-key="label"
           size="sm"
-          @click="activeFilter = (f.value as 'all' | 'watched' | 'plan_to_watch')"
-        >
-          {{ f.label }}
-        </UButton>
+          class="w-52"
+        />
       </div>
     </div>
 
