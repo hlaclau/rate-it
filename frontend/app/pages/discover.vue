@@ -28,11 +28,41 @@ const MAX_YEAR = new Date().getFullYear()
 // --- State ---
 const type = ref('')
 const sortBy = ref('popularity.desc')
-const yearRange = ref([MIN_YEAR, MAX_YEAR])
-const ratingRange = ref([0, 10])
+const yearRange = ref<[number, number]>([MIN_YEAR, MAX_YEAR])
+const ratingRange = ref<[number, number]>([0, 10])
 const page = ref(1)
+const watchProviders = ref<string[]>([])
+const withGenres = ref<string[]>([])
 
 const MIN_VOTE_COUNT = 100
+
+// Platform definitions — value is the TMDB provider ID string
+const platforms = [
+  { value: '8',   label: 'Netflix' },
+  { value: '337', label: 'Disney+' },
+  { value: '9',   label: 'Amazon Prime' },
+  { value: '384', label: 'HBO Max' },
+  { value: '2',   label: 'Apple TV+' },
+  { value: '15',  label: 'Hulu' },
+  { value: '531', label: 'Paramount+' },
+  { value: '283', label: 'Crunchyroll' },
+]
+
+// Genre definitions — value is the TMDB genre ID string
+const genres = [
+  { value: '28',    label: 'Action' },
+  { value: '12',    label: 'Adventure' },
+  { value: '16',    label: 'Animation' },
+  { value: '35',    label: 'Comedy' },
+  { value: '80',    label: 'Crime' },
+  { value: '99',    label: 'Documentary' },
+  { value: '18',    label: 'Drama' },
+  { value: '14',    label: 'Fantasy' },
+  { value: '27',    label: 'Horror' },
+  { value: '10749', label: 'Romance' },
+  { value: '878',   label: 'Sci-Fi' },
+  { value: '53',    label: 'Thriller' },
+]
 
 // Automatically require a minimum vote count when sorting/filtering by rating
 const needsMinVotes = computed(() =>
@@ -41,8 +71,19 @@ const needsMinVotes = computed(() =>
   ratingRange.value[0] > 0
 )
 
+// USelectMenu works with full objects; bridge back to ID string arrays on change
+const selectedPlatforms = computed({
+  get: () => platforms.filter(p => watchProviders.value.includes(p.value)),
+  set: (items) => { watchProviders.value = items.map(i => i.value) },
+})
+
+const selectedGenres = computed({
+  get: () => genres.filter(g => withGenres.value.includes(g.value)),
+  set: (items) => { withGenres.value = items.map(i => i.value) },
+})
+
 // --- Init / sync from URL ---
-function syncFromQuery(query: Record<string, string | string[]>) {
+function syncFromQuery(query: Record<string, any>) {
   type.value = String(query.type ?? '')
   sortBy.value = String(query.sort_by ?? 'popularity.desc')
   yearRange.value = [
@@ -54,11 +95,12 @@ function syncFromQuery(query: Record<string, string | string[]>) {
     Number(query.vote_average_max ?? 10),
   ]
   page.value = Number(query.page ?? 1)
+  watchProviders.value = query.watch_providers ? String(query.watch_providers).split('|') : []
+  withGenres.value = query.with_genres ? String(query.with_genres).split('|') : []
 }
 
 syncFromQuery(route.query)
 
-// Handle preset nav link clicks (same route, different query)
 let externalNav = false
 onBeforeRouteUpdate((to) => {
   externalNav = true
@@ -67,7 +109,7 @@ onBeforeRouteUpdate((to) => {
 })
 
 // --- Reset page when filters change ---
-watch([type, sortBy, yearRange, ratingRange], () => {
+watch([type, sortBy, yearRange, ratingRange, watchProviders, withGenres], () => {
   if (externalNav) return
   page.value = 1
 }, { deep: true })
@@ -82,10 +124,12 @@ function buildQuery() {
   if (ratingRange.value[0] > 0) out.vote_average_min = ratingRange.value[0].toFixed(1)
   if (ratingRange.value[1] < 10) out.vote_average_max = ratingRange.value[1].toFixed(1)
   if (page.value > 1) out.page = String(page.value)
+  if (watchProviders.value.length) out.watch_providers = watchProviders.value.join('|')
+  if (withGenres.value.length) out.with_genres = withGenres.value.join('|')
   return out
 }
 
-watch([type, sortBy, yearRange, ratingRange, page], () => {
+watch([type, sortBy, yearRange, ratingRange, page, watchProviders, withGenres], () => {
   if (externalNav) return
   router.replace({ query: buildQuery() })
 }, { deep: true })
@@ -101,6 +145,11 @@ const apiUrl = computed(() => {
   if (ratingRange.value[1] < 10) params.set('vote_average_max', ratingRange.value[1].toFixed(1))
   if (needsMinVotes.value) params.set('vote_count_min', String(MIN_VOTE_COUNT))
   params.set('page', String(page.value))
+  if (watchProviders.value.length) {
+    params.set('watch_providers', watchProviders.value.join('|'))
+    params.set('watch_region', 'US')
+  }
+  if (withGenres.value.length) params.set('with_genres', withGenres.value.join('|'))
   return `${config.public.apiBase}/api/media/search?${params.toString()}`
 })
 
@@ -121,6 +170,8 @@ const presets = [
       sortBy.value = 'popularity.desc'
       yearRange.value = [MIN_YEAR, MAX_YEAR]
       ratingRange.value = [0, 10]
+      watchProviders.value = []
+      withGenres.value = []
     },
   },
   {
@@ -131,6 +182,8 @@ const presets = [
       sortBy.value = 'vote_average.desc'
       yearRange.value = [MIN_YEAR, MAX_YEAR]
       ratingRange.value = [7.0, 10]
+      watchProviders.value = []
+      withGenres.value = []
     },
   },
   {
@@ -141,6 +194,8 @@ const presets = [
       sortBy.value = 'release_date.desc'
       yearRange.value = [MAX_YEAR - 1, MAX_YEAR]
       ratingRange.value = [0, 10]
+      watchProviders.value = []
+      withGenres.value = []
     },
   },
 ]
@@ -151,6 +206,27 @@ const activePreset = computed(() => {
   if (sortBy.value === 'release_date.desc') return 'New Releases'
   return null
 })
+
+// Active filter count badge
+const activeFilterCount = computed(() => {
+  let count = 0
+  if (type.value) count++
+  if (sortBy.value !== 'popularity.desc') count++
+  if (yearRange.value[0] > MIN_YEAR || yearRange.value[1] < MAX_YEAR) count++
+  if (ratingRange.value[0] > 0 || ratingRange.value[1] < 10) count++
+  count += watchProviders.value.length
+  count += withGenres.value.length
+  return count
+})
+
+function resetFilters() {
+  type.value = ''
+  sortBy.value = 'popularity.desc'
+  yearRange.value = [MIN_YEAR, MAX_YEAR]
+  ratingRange.value = [0, 10]
+  watchProviders.value = []
+  withGenres.value = []
+}
 
 // --- Helpers ---
 const totalPages = computed(() => Math.min(data.value?.total_pages ?? 1, 500))
@@ -178,12 +254,10 @@ function mediaRoute(r: MediaResult) { return r.media_type === 'tv' ? `/series/${
 
 <template>
   <UContainer class="py-10">
-    <!-- Header + presets -->
-    <div class="mb-6">
-      <h1 class="text-3xl font-bold tracking-tight">Discover</h1>
-      <p class="text-muted mt-1">
-        Browse movies & series with filters.
-      </p>
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-4xl font-bold tracking-tight">Discover</h1>
+      <p class="text-muted mt-1.5">Browse movies &amp; series with smart filters.</p>
     </div>
 
     <!-- Preset pills -->
@@ -191,97 +265,155 @@ function mediaRoute(r: MediaResult) { return r.media_type === 'tv' ? `/series/${
       <button
         v-for="preset in presets"
         :key="preset.label"
-        class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium border transition-colors"
-        :class="activePreset === preset.label
-          ? 'bg-primary-500 border-primary-500 text-white'
-          : 'border-default text-muted hover:text-default hover:border-primary-400'"
+        class="discover-preset"
+        :class="activePreset === preset.label ? 'discover-preset--active' : ''"
         @click="preset.apply()"
       >
-        <UIcon :name="preset.icon" class="size-3.5" />
+        <UIcon :name="preset.icon" class="size-3.5 shrink-0" />
         {{ preset.label }}
       </button>
     </div>
 
-    <!-- Filters -->
-    <div class="flex flex-wrap items-end gap-3 mb-8 p-4 rounded-xl border border-default bg-elevated">
-      <!-- Type toggle -->
-      <div class="flex rounded-lg overflow-hidden border border-default shrink-0">
-        <button
-          v-for="opt in typeOptions"
-          :key="opt.value"
-          class="px-3 py-1.5 text-sm font-medium transition-colors"
-          :class="type === opt.value
-            ? 'bg-primary-500 text-white'
-            : 'text-muted hover:text-default hover:bg-muted'"
-          @click="type = opt.value"
-        >
-          {{ opt.label }}
+    <!-- ── Filter Panel ── -->
+    <div class="discover-panel mb-8">
+
+      <!-- Row 1: Type + Sort + Year + Rating -->
+      <div class="discover-row">
+
+        <!-- Type segmented -->
+        <div class="discover-field">
+          <span class="discover-label">Type</span>
+          <div class="discover-segmented">
+            <button
+              v-for="opt in typeOptions"
+              :key="opt.value"
+              class="discover-seg-btn"
+              :class="type === opt.value ? 'discover-seg-btn--active' : ''"
+              @click="type = opt.value"
+            >
+              {{ opt.label }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Sort -->
+        <div class="discover-field discover-field--grow">
+          <span class="discover-label">Sort by</span>
+          <USelect v-model="sortBy" :items="sortOptions" class="w-full" />
+        </div>
+
+        <!-- Year Range -->
+        <div class="discover-field">
+          <span class="discover-label">Year</span>
+          <div class="discover-range-inputs">
+            <input
+              type="number"
+              :value="yearRange[0]"
+              :min="MIN_YEAR"
+              :max="yearRange[1]"
+              class="discover-num-input"
+              @change="yearRange = [Math.max(MIN_YEAR, Math.min(Number(($event.target as HTMLInputElement).value), yearRange[1])), yearRange[1]]"
+            />
+            <span class="discover-range-sep">–</span>
+            <input
+              type="number"
+              :value="yearRange[1]"
+              :min="yearRange[0]"
+              :max="MAX_YEAR"
+              class="discover-num-input"
+              @change="yearRange = [yearRange[0], Math.min(MAX_YEAR, Math.max(Number(($event.target as HTMLInputElement).value), yearRange[0]))]"
+            />
+          </div>
+        </div>
+
+        <!-- Rating Range -->
+        <div class="discover-field">
+          <span class="discover-label">Rating</span>
+          <div class="discover-range-inputs">
+            <input
+              type="number"
+              :value="ratingRange[0]"
+              :min="0"
+              :max="ratingRange[1]"
+              :step="0.1"
+              class="discover-num-input discover-num-input--sm"
+              @change="ratingRange = [Math.max(0, Math.min(Number(Number(($event.target as HTMLInputElement).value).toFixed(1)), ratingRange[1])), ratingRange[1]]"
+            />
+            <span class="discover-range-sep">–</span>
+            <input
+              type="number"
+              :value="ratingRange[1]"
+              :min="ratingRange[0]"
+              :max="10"
+              :step="0.1"
+              class="discover-num-input discover-num-input--sm"
+              @change="ratingRange = [ratingRange[0], Math.min(10, Math.max(Number(Number(($event.target as HTMLInputElement).value).toFixed(1)), ratingRange[0]))]"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <div class="discover-divider" />
+
+      <!-- Row 2: Streaming + Genre (multi-select dropdowns) -->
+      <div class="discover-row">
+
+        <!-- Streaming -->
+        <div class="discover-field discover-field--grow">
+          <span class="discover-label">
+            <UIcon name="i-lucide-tv" class="size-3.5" />
+            Streaming
+          </span>
+          <USelectMenu
+            v-model="selectedPlatforms"
+            :items="platforms"
+            multiple
+            placeholder="All platforms"
+            class="w-full"
+          />
+        </div>
+
+        <!-- Genre -->
+        <div class="discover-field discover-field--grow">
+          <span class="discover-label">
+            <UIcon name="i-lucide-tag" class="size-3.5" />
+            Genre
+          </span>
+          <USelectMenu
+            v-model="selectedGenres"
+            :items="genres"
+            multiple
+            placeholder="All genres"
+            class="w-full"
+          />
+        </div>
+
+      </div>
+
+      <!-- Footer: active count + reset -->
+      <div v-if="activeFilterCount > 0" class="discover-panel-footer">
+        <span class="discover-active-badge">
+          <UIcon name="i-lucide-sliders-horizontal" class="size-3" />
+          {{ activeFilterCount }} filter{{ activeFilterCount !== 1 ? 's' : '' }} active
+        </span>
+        <button class="discover-reset-btn" @click="resetFilters">
+          <UIcon name="i-lucide-x" class="size-3.5" />
+          Reset all
         </button>
-      </div>
-
-      <!-- Sort -->
-      <USelect v-model="sortBy" :items="sortOptions" class="w-44" />
-
-      <!-- Year range -->
-      <div class="flex flex-col gap-1 shrink-0">
-        <span class="text-xs text-muted font-medium">Year</span>
-        <div class="flex items-center gap-1.5">
-          <input
-            type="number"
-            :value="yearRange[0]"
-            :min="MIN_YEAR"
-            :max="yearRange[1]"
-            class="w-20 rounded-md border border-default bg-default px-2 py-1.5 text-sm tabular-nums text-center focus:outline-none focus:ring-2 focus:ring-primary-500"
-            @change="yearRange = [Math.max(MIN_YEAR, Math.min(Number(($event.target as HTMLInputElement).value), yearRange[1])), yearRange[1]]"
-          />
-          <span class="text-muted text-xs">—</span>
-          <input
-            type="number"
-            :value="yearRange[1]"
-            :min="yearRange[0]"
-            :max="MAX_YEAR"
-            class="w-20 rounded-md border border-default bg-default px-2 py-1.5 text-sm tabular-nums text-center focus:outline-none focus:ring-2 focus:ring-primary-500"
-            @change="yearRange = [yearRange[0], Math.min(MAX_YEAR, Math.max(Number(($event.target as HTMLInputElement).value), yearRange[0]))]"
-          />
-        </div>
-      </div>
-
-      <!-- Rating range -->
-      <div class="flex flex-col gap-1 shrink-0">
-        <span class="text-xs text-muted font-medium">Rating</span>
-        <div class="flex items-center gap-1.5">
-          <input
-            type="number"
-            :value="ratingRange[0]"
-            :min="0"
-            :max="ratingRange[1]"
-            :step="0.1"
-            class="w-16 rounded-md border border-default bg-default px-2 py-1.5 text-sm tabular-nums text-center focus:outline-none focus:ring-2 focus:ring-primary-500"
-            @change="ratingRange = [Math.max(0, Math.min(Number(Number(($event.target as HTMLInputElement).value).toFixed(1)), ratingRange[1])), ratingRange[1]]"
-          />
-          <span class="text-muted text-xs">—</span>
-          <input
-            type="number"
-            :value="ratingRange[1]"
-            :min="ratingRange[0]"
-            :max="10"
-            :step="0.1"
-            class="w-16 rounded-md border border-default bg-default px-2 py-1.5 text-sm tabular-nums text-center focus:outline-none focus:ring-2 focus:ring-primary-500"
-            @change="ratingRange = [ratingRange[0], Math.min(10, Math.max(Number(Number(($event.target as HTMLInputElement).value).toFixed(1)), ratingRange[0]))]"
-          />
-        </div>
       </div>
     </div>
 
     <!-- Result count -->
     <p v-if="data && status === 'success'" class="text-sm text-muted mb-6">
-      {{ data.total_results.toLocaleString() }} results — page {{ data.page }} of {{ totalPages }}
+      <span class="font-semibold text-default">{{ data.total_results.toLocaleString() }}</span>
+      results — page {{ data.page }} of {{ totalPages }}
     </p>
 
     <!-- Loading skeleton -->
     <div v-if="status === 'pending'" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
       <div v-for="i in 20" :key="i" class="space-y-2">
-        <USkeleton class="aspect-[2/3] w-full rounded-lg" />
+        <USkeleton class="aspect-[2/3] w-full rounded-xl" />
         <USkeleton class="h-4 w-3/4" />
         <USkeleton class="h-3 w-1/2" />
       </div>
@@ -298,7 +430,7 @@ function mediaRoute(r: MediaResult) { return r.media_type === 'tv' ? `/series/${
         :to="mediaRoute(result)"
         class="group"
       >
-        <div class="relative aspect-[2/3] rounded-lg overflow-hidden bg-elevated">
+        <div class="relative aspect-[2/3] rounded-xl overflow-hidden bg-elevated">
           <img
             v-if="posterUrl(result)"
             :src="posterUrl(result)!"
@@ -334,7 +466,7 @@ function mediaRoute(r: MediaResult) { return r.media_type === 'tv' ? `/series/${
     </div>
 
     <!-- Empty state -->
-    <div v-else-if="status !== 'pending'" class="flex flex-col items-center gap-4 py-24 text-center">
+    <div v-else class="flex flex-col items-center gap-4 py-24 text-center">
       <UIcon name="i-lucide-search-x" class="size-14 text-muted" />
       <div>
         <p class="font-semibold">No results found</p>
@@ -354,3 +486,185 @@ function mediaRoute(r: MediaResult) { return r.media_type === 'tv' ? `/series/${
     </div>
   </UContainer>
 </template>
+
+<style scoped>
+/* ── Preset pills ── */
+.discover-preset {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.875rem;
+  border-radius: 9999px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  border: 1px solid var(--ui-border);
+  color: var(--ui-text-muted);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+.discover-preset:hover {
+  color: var(--ui-text);
+  border-color: var(--ui-primary);
+  background: color-mix(in srgb, var(--ui-primary) 8%, transparent);
+}
+.discover-preset--active {
+  background: var(--ui-primary);
+  border-color: var(--ui-primary);
+  color: white;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ui-primary) 20%, transparent);
+}
+.discover-preset--active:hover {
+  background: var(--ui-primary);
+  color: white;
+}
+
+/* ── Filter Panel ── */
+.discover-panel {
+  border: 1px solid var(--ui-border);
+  border-radius: 1rem;
+  padding: 1.25rem;
+  background: var(--ui-bg-elevated);
+  display: flex;
+  flex-direction: column;
+  gap: 1.125rem;
+}
+
+.discover-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.875rem;
+}
+
+.discover-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+.discover-field--grow {
+  flex: 1 1 160px;
+}
+
+.discover-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ui-text-muted);
+}
+
+/* ── Segmented control ── */
+.discover-segmented {
+  display: flex;
+  border-radius: 0.625rem;
+  border: 1px solid var(--ui-border);
+  overflow: hidden;
+  background: var(--ui-bg);
+}
+.discover-seg-btn {
+  padding: 0.375rem 0.875rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--ui-text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+.discover-seg-btn:not(:last-child) {
+  border-right: 1px solid var(--ui-border);
+}
+.discover-seg-btn:hover:not(.discover-seg-btn--active) {
+  color: var(--ui-text);
+  background: var(--ui-bg-muted);
+}
+.discover-seg-btn--active {
+  background: var(--ui-primary);
+  color: white;
+}
+
+/* ── Range inputs ── */
+.discover-range-inputs {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+.discover-range-sep {
+  font-size: 0.8125rem;
+  color: var(--ui-text-muted);
+}
+.discover-num-input {
+  width: 5rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--ui-border);
+  background: var(--ui-bg);
+  padding: 0.375rem 0.5rem;
+  font-size: 0.8125rem;
+  text-align: center;
+  color: var(--ui-text);
+  transition: border-color 0.15s, box-shadow 0.15s;
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+.discover-num-input::-webkit-inner-spin-button,
+.discover-num-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+.discover-num-input:focus {
+  outline: none;
+  border-color: var(--ui-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ui-primary) 20%, transparent);
+}
+.discover-num-input--sm {
+  width: 3.75rem;
+}
+
+/* ── Dividers ── */
+.discover-divider {
+  height: 1px;
+  background: var(--ui-border);
+}
+
+
+
+/* ── Panel footer ── */
+.discover-panel-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.25rem;
+  border-top: 1px solid var(--ui-border);
+  margin-top: 0.125rem;
+}
+.discover-active-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.75rem;
+  color: var(--ui-primary);
+  font-weight: 500;
+}
+.discover-reset-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--ui-text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+  transition: all 0.15s;
+}
+.discover-reset-btn:hover {
+  color: var(--ui-text);
+  background: var(--ui-bg-muted);
+}
+</style>

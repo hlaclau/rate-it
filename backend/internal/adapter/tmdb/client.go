@@ -230,6 +230,17 @@ func buildDiscoverValues(endpoint string, p domain.MediaParams) url.Values {
 	if p.Language != "" {
 		v.Set("with_original_language", p.Language)
 	}
+	if p.WithGenres != "" {
+		v.Set("with_genres", p.WithGenres)
+	}
+	if p.WatchProviders != "" {
+		v.Set("with_watch_providers", p.WatchProviders)
+		region := p.WatchRegion
+		if region == "" {
+			region = "US"
+		}
+		v.Set("watch_region", region)
+	}
 	if p.Page > 1 {
 		v.Set("page", strconv.Itoa(p.Page))
 	}

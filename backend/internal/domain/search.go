@@ -21,6 +21,11 @@ type MediaParams struct {
 	VoteAverageMin float32 // 0–10
 	VoteAverageMax float32 // 0–10
 	VoteCountMin   int     // minimum number of votes; 0 means no filter
+
+	// Genre & platform filters (discover mode)
+	WithGenres    string // pipe-separated TMDB genre IDs, e.g. "28|12"
+	WatchProviders string // pipe-separated provider IDs, e.g. "8|337"
+	WatchRegion    string // ISO 3166-1, e.g. "US"; required when WatchProviders is set
 }
 
 // Supported SortBy values for discover mode.

@@ -49,12 +49,15 @@ func (uc *MediaUseCase) SearchMedia(ctx context.Context, params domain.MediaPara
 		key = fmt.Sprintf("search:tmdb:%s:%s:p%d:lang:%s:adult:%d",
 			params.Type, params.Query, page, strings.ToLower(params.Language), adult)
 	} else {
-		key = fmt.Sprintf("discover:tmdb:%s:%s:yf%d:yt%d:vmin%.1f:vmax%.1f:vc%d:lang:%s:p%d",
+		key = fmt.Sprintf("discover:tmdb:%s:%s:yf%d:yt%d:vmin%.1f:vmax%.1f:vc%d:lang:%s:genres:%s:wp:%s:%s:p%d",
 			params.Type, params.SortBy,
 			params.YearFrom, params.YearTo,
 			params.VoteAverageMin, params.VoteAverageMax,
 			params.VoteCountMin,
-			strings.ToLower(params.Language), page)
+			strings.ToLower(params.Language),
+			params.WithGenres,
+			params.WatchProviders, strings.ToUpper(params.WatchRegion),
+			page)
 	}
 
 	raw, err := uc.cache.Get(ctx, key)

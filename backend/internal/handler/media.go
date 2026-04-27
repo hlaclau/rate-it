@@ -133,6 +133,9 @@ func (h *MediaHandler) SearchMedia(w http.ResponseWriter, r *http.Request) {
 		VoteAverageMin: float32(voteMin),
 		VoteAverageMax: float32(voteMax),
 		VoteCountMin:   voteCountMin,
+		WithGenres:     q.Get("with_genres"),
+		WatchProviders: q.Get("watch_providers"),
+		WatchRegion:    q.Get("watch_region"),
 	}
 
 	raw, err := h.uc.SearchMedia(r.Context(), params)
