@@ -34,8 +34,8 @@ const sortBy = ref('popularity.desc')
 const yearRange = ref<[number, number]>([MIN_YEAR, MAX_YEAR])
 const ratingRange = ref<[number, number]>([0, 10])
 const page = ref(1)
-const watchProviders = ref<string[]>([])
-const withGenres = ref<string[]>([])
+const watchProviders = ref('')
+const withGenres = ref('')
 
 const MIN_VOTE_COUNT = 100
 
@@ -75,18 +75,18 @@ const needsMinVotes = computed(
     ratingRange.value[0] > 0
 )
 
-// USelectMenu works with full objects; bridge back to ID string arrays on change
-const selectedPlatforms = computed({
-  get: () => platforms.filter((p) => watchProviders.value.includes(p.value)),
-  set: (items) => {
-    watchProviders.value = items.map((i) => i.value)
+// USelectMenu works with full objects; bridge back to ID string on change
+const selectedPlatform = computed({
+  get: () => platforms.find((p) => watchProviders.value === p.value) ?? null,
+  set: (item) => {
+    watchProviders.value = item?.value ?? ''
   },
 })
 
-const selectedGenres = computed({
-  get: () => genres.filter((g) => withGenres.value.includes(g.value)),
-  set: (items) => {
-    withGenres.value = items.map((i) => i.value)
+const selectedGenre = computed({
+  get: () => genres.find((g) => withGenres.value === g.value) ?? null,
+  set: (item) => {
+    withGenres.value = item?.value ?? ''
   },
 })
 
@@ -106,11 +106,11 @@ function syncFromQuery(query: LocationQuery) {
   ]
   page.value = Number(query.page ?? 1)
   watchProviders.value = query.watch_providers
-    ? String(query.watch_providers).split('|')
-    : []
+    ? String(query.watch_providers)
+    : ''
   withGenres.value = query.with_genres
-    ? String(query.with_genres).split('|')
-    : []
+    ? String(query.with_genres)
+    : ''
 }
 
 syncFromQuery(route.query)
@@ -146,9 +146,8 @@ function buildQuery() {
   if (ratingRange.value[1] < 10)
     out.vote_average_max = ratingRange.value[1].toFixed(1)
   if (page.value > 1) out.page = String(page.value)
-  if (watchProviders.value.length)
-    out.watch_providers = watchProviders.value.join('|')
-  if (withGenres.value.length) out.with_genres = withGenres.value.join('|')
+  if (watchProviders.value) out.watch_providers = watchProviders.value
+  if (withGenres.value) out.with_genres = withGenres.value
   return out
 }
 
@@ -176,12 +175,12 @@ const apiUrl = computed(() => {
     params.set('vote_average_max', ratingRange.value[1].toFixed(1))
   if (needsMinVotes.value) params.set('vote_count_min', String(MIN_VOTE_COUNT))
   params.set('page', String(page.value))
-  if (watchProviders.value.length) {
-    params.set('watch_providers', watchProviders.value.join('|'))
+  if (watchProviders.value) {
+    params.set('watch_providers', watchProviders.value)
     params.set('watch_region', 'US')
   }
-  if (withGenres.value.length)
-    params.set('with_genres', withGenres.value.join('|'))
+  if (withGenres.value)
+    params.set('with_genres', withGenres.value)
   return `${config.public.apiBase}/api/media/search?${params.toString()}`
 })
 
@@ -461,9 +460,8 @@ function mediaRoute(r: MediaResult) {
             Streaming
           </span>
           <USelectMenu
-            v-model="selectedPlatforms"
+            v-model="selectedPlatform"
             :items="platforms"
-            multiple
             placeholder="All platforms"
             class="w-full"
           />
@@ -476,9 +474,8 @@ function mediaRoute(r: MediaResult) {
             Genre
           </span>
           <USelectMenu
-            v-model="selectedGenres"
+            v-model="selectedGenre"
             :items="genres"
-            multiple
             placeholder="All genres"
             class="w-full"
           />
