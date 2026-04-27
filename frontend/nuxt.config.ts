@@ -1,17 +1,10 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  modules: ['@nuxt/eslint', '@nuxt/ui'],
   ssr: false,
 
-  modules: ['@nuxt/eslint', '@nuxt/ui'],
-
-  colorMode: {
-    preference: 'system',
-  },
-
-  runtimeConfig: {
-    public: {
-      apiBase: 'http://localhost:8080',
-    },
+  devtools: {
+    enabled: true,
   },
 
   app: {
@@ -31,11 +24,17 @@ export default defineNuxtConfig({
     },
   },
 
-  devtools: {
-    enabled: true,
+  css: ['~/assets/css/main.css'],
+
+  colorMode: {
+    preference: 'system',
   },
 
-  css: ['~/assets/css/main.css'],
+  runtimeConfig: {
+    public: {
+      apiBase: 'http://localhost:8080',
+    },
+  },
 
   routeRules: {
     '/': { prerender: true },

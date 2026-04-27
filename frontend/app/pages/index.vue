@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { user, logout } = useAuth()
+const { user } = useAuth()
 
 const primaryLinks = computed(() => {
   if (user.value) {
@@ -24,7 +24,7 @@ const primaryLinks = computed(() => {
   }
   return [
     {
-      label: 'Get Started — It\'s Free',
+      label: "Get Started — It's Free",
       size: 'xl',
       color: 'purple',
       variant: 'solid',
@@ -45,22 +45,26 @@ const features = [
   {
     icon: 'i-lucide-list-checks',
     title: 'Build your watchlist',
-    description: 'Add movies and series you want to watch. Keep track of what you\'ve already seen, all in one place.',
+    description:
+      "Add movies and series you want to watch. Keep track of what you've already seen, all in one place.",
   },
   {
     icon: 'i-lucide-star',
     title: 'Rate & review',
-    description: 'Score every title out of 10 and write your own critic-style review to capture your thoughts.',
+    description:
+      'Score every title out of 10 and write your own critic-style review to capture your thoughts.',
   },
   {
     icon: 'i-lucide-compass',
     title: 'Discover new titles',
-    description: 'Browse by genre, year, or rating to find your next favourite film or binge-worthy series.',
+    description:
+      'Browse by genre, year, or rating to find your next favourite film or binge-worthy series.',
   },
   {
     icon: 'i-lucide-tv-2',
     title: 'Movies & series',
-    description: 'Rate-It covers both films and TV series so your entire watchlist lives in one place.',
+    description:
+      'Rate-It covers both films and TV series so your entire watchlist lives in one place.',
   },
 ]
 </script>

@@ -55,16 +55,29 @@ export const useList = () => {
 
   const remove = async (mediaID: string) => {
     await apiFetch(`list/${mediaID}`, { method: 'DELETE' })
-    list.value = list.value.filter(e => e.media_id !== mediaID)
+    list.value = list.value.filter((e) => e.media_id !== mediaID)
   }
 
-  const fetchStatus = async (externalID: string, source = 'tmdb'): Promise<ListEntry | null> => {
+  const fetchStatus = async (
+    externalID: string,
+    source = 'tmdb'
+  ): Promise<ListEntry | null> => {
     try {
-      return await apiFetch<ListEntry>(`list/status/${externalID}?source=${source}`)
+      return await apiFetch<ListEntry>(
+        `list/status/${externalID}?source=${source}`
+      )
     } catch {
       return null
     }
   }
 
-  return { list, listLoading, fetchList, addOrUpdate, update, remove, fetchStatus }
+  return {
+    list,
+    listLoading,
+    fetchList,
+    addOrUpdate,
+    update,
+    remove,
+    fetchStatus,
+  }
 }

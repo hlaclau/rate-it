@@ -10,7 +10,7 @@ const activeFilter = ref<'all' | 'watched' | 'plan_to_watch'>('all')
 const filteredList = computed<ListEntry[]>(() =>
   activeFilter.value === 'all'
     ? list.value
-    : list.value.filter(e => e.status === activeFilter.value)
+    : list.value.filter((e) => e.status === activeFilter.value)
 )
 
 onMounted(fetchList)
@@ -51,7 +51,7 @@ useSeoMeta({ title: 'My List — Rate It' })
           :variant="activeFilter === f.value ? 'solid' : 'ghost'"
           color="neutral"
           size="sm"
-          @click="activeFilter = (f.value as 'all' | 'watched' | 'plan_to_watch')"
+          @click="activeFilter = f.value as 'all' | 'watched' | 'plan_to_watch'"
         >
           {{ f.label }}
         </UButton>
@@ -75,7 +75,11 @@ useSeoMeta({ title: 'My List — Rate It' })
       <div>
         <p class="font-semibold text-lg">Nothing here yet</p>
         <p class="text-muted text-sm mt-1">
-          {{ activeFilter === 'all' ? 'Add movies or series to your list from their detail page.' : 'No entries with this status.' }}
+          {{
+            activeFilter === 'all'
+              ? 'Add movies or series to your list from their detail page.'
+              : 'No entries with this status.'
+          }}
         </p>
       </div>
       <UButton to="/discover" variant="soft" leading-icon="i-lucide-compass">
@@ -93,7 +97,13 @@ useSeoMeta({ title: 'My List — Rate It' })
         :key="entry.media_id"
         class="group relative rounded-xl overflow-hidden bg-elevated ring-1 ring-default hover:ring-primary transition-all"
       >
-        <NuxtLink :to="entry.type === 'series' ? `/series/${entry.external_id}` : `/movie/${entry.external_id}`">
+        <NuxtLink
+          :to="
+            entry.type === 'series'
+              ? `/series/${entry.external_id}`
+              : `/movie/${entry.external_id}`
+          "
+        >
           <img
             v-if="posterUrl(entry.poster_path)"
             :src="posterUrl(entry.poster_path)!"
@@ -109,7 +119,9 @@ useSeoMeta({ title: 'My List — Rate It' })
         </NuxtLink>
 
         <div class="p-3 space-y-1.5">
-          <p class="font-semibold text-sm leading-tight line-clamp-2">{{ entry.title }}</p>
+          <p class="font-semibold text-sm leading-tight line-clamp-2">
+            {{ entry.title }}
+          </p>
           <div class="flex items-center justify-between gap-2">
             <UBadge
               :color="entry.status === 'watched' ? 'success' : 'info'"
@@ -121,14 +133,14 @@ useSeoMeta({ title: 'My List — Rate It' })
               v-if="entry.rating"
               class="flex items-center gap-0.5 text-xs font-medium shrink-0"
             >
-              <UIcon name="i-lucide-star" class="size-3 text-yellow-400 fill-yellow-400" />
+              <UIcon
+                name="i-lucide-star"
+                class="size-3 text-yellow-400 fill-yellow-400"
+              />
               {{ entry.rating }}
             </span>
           </div>
-          <p
-            v-if="entry.review"
-            class="text-xs text-muted line-clamp-2 italic"
-          >
+          <p v-if="entry.review" class="text-xs text-muted line-clamp-2 italic">
             "{{ entry.review }}"
           </p>
         </div>
@@ -149,18 +161,32 @@ useSeoMeta({ title: 'My List — Rate It' })
     <UModal
       :open="!!pendingRemove"
       title="Remove from list"
-      :description="pendingRemove ? `Remove &quot;${pendingRemove.title}&quot; from your list?` : ''"
-      @update:open="(v) => { if (!v) pendingRemove = null }"
+      :description="
+        pendingRemove
+          ? `Remove &quot;${pendingRemove.title}&quot; from your list?`
+          : ''
+      "
+      @update:open="
+        (v) => {
+          if (!v) pendingRemove = null
+        }
+      "
     >
       <template #footer>
         <div class="flex justify-end gap-2">
-          <UButton color="neutral" variant="ghost" @click="pendingRemove = null">Cancel</UButton>
-          <UButton color="error" :loading="removing" leading-icon="i-lucide-trash-2" @click="confirmRemove">
+          <UButton color="neutral" variant="ghost" @click="pendingRemove = null"
+            >Cancel</UButton
+          >
+          <UButton
+            color="error"
+            :loading="removing"
+            leading-icon="i-lucide-trash-2"
+            @click="confirmRemove"
+          >
             Remove
           </UButton>
         </div>
       </template>
     </UModal>
-
   </UContainer>
 </template>

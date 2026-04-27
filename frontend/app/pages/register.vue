@@ -1,63 +1,136 @@
 <template>
-  <div class="flex-1 flex items-center justify-center py-20 px-4 transition-colors duration-300">
+  <div
+    class="flex-1 flex items-center justify-center py-20 px-4 transition-colors duration-300"
+  >
     <div class="w-full max-w-md">
       <div class="text-center mb-8">
-        <h1 class="text-4xl font-bold text-zinc-900 dark:text-white tracking-tight mb-2">
+        <h1
+          class="text-4xl font-bold text-zinc-900 dark:text-white tracking-tight mb-2"
+        >
           Rate<span class="text-purple-600 dark:text-purple-500">-It</span>
         </h1>
         <p class="text-zinc-500 dark:text-zinc-400">Create your account.</p>
       </div>
 
-      <div class="bg-white dark:bg-zinc-900/50 backdrop-blur-xl border border-zinc-200 dark:border-zinc-800 p-8 rounded-2xl shadow-xl dark:shadow-2xl w-full">
-        <UForm :state="state" :validate="validate" class="w-full" @submit="onSubmit" @error="onError">
-
+      <div
+        class="bg-white dark:bg-zinc-900/50 backdrop-blur-xl border border-zinc-200 dark:border-zinc-800 p-8 rounded-2xl shadow-xl dark:shadow-2xl w-full"
+      >
+        <UForm
+          :state="state"
+          :validate="validate"
+          class="w-full"
+          @submit="onSubmit"
+          @error="onError"
+        >
           <div class="mb-6">
             <UFormGroup label="Username" name="username" class="w-full">
-              <UInput v-model="state.username" placeholder="username" icon="i-lucide-user" size="lg" variant="outline"
-                color="primary" class="w-full" />
+              <UInput
+                v-model="state.username"
+                placeholder="username"
+                icon="i-lucide-user"
+                size="lg"
+                variant="outline"
+                color="primary"
+                class="w-full"
+              />
             </UFormGroup>
           </div>
 
           <div class="mb-6">
             <UFormGroup label="Email" name="email" class="w-full">
-              <UInput v-model="state.email" placeholder="you@example.com" icon="i-lucide-mail" size="lg"
-                variant="outline" color="primary" class="w-full" />
+              <UInput
+                v-model="state.email"
+                placeholder="you@example.com"
+                icon="i-lucide-mail"
+                size="lg"
+                variant="outline"
+                color="primary"
+                class="w-full"
+              />
             </UFormGroup>
           </div>
 
           <div class="mb-6">
-            <UFormGroup label="Password" name="password" class="w-full" help="Min. 8 characters, including 1 uppercase, 1 lowercase and 1 number">
-              <UInput v-model="state.password" :type="showPassword ? 'text' : 'password'" placeholder="••••••••"
-                icon="i-lucide-lock" size="lg" variant="outline" color="primary" class="w-full">
+            <UFormGroup
+              label="Password"
+              name="password"
+              class="w-full"
+              help="Min. 8 characters, including 1 uppercase, 1 lowercase and 1 number"
+            >
+              <UInput
+                v-model="state.password"
+                :type="showPassword ? 'text' : 'password'"
+                placeholder="••••••••"
+                icon="i-lucide-lock"
+                size="lg"
+                variant="outline"
+                color="primary"
+                class="w-full"
+              >
                 <template #trailing>
-                  <UButton :icon="showPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'" color="neutral" variant="ghost"
-                    size="xs" tabindex="-1" @click="showPassword = !showPassword" />
+                  <UButton
+                    :icon="showPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'"
+                    color="neutral"
+                    variant="ghost"
+                    size="xs"
+                    tabindex="-1"
+                    @click="showPassword = !showPassword"
+                  />
                 </template>
               </UInput>
             </UFormGroup>
           </div>
 
           <div class="mb-6">
-            <UFormGroup label="Confirm Password" name="confirmPassword" class="w-full">
-              <UInput v-model="state.confirmPassword" :type="showConfirmPassword ? 'text' : 'password'"
-                placeholder="••••••••" icon="i-lucide-shield-check" size="lg" variant="outline" color="primary"
-                class="w-full">
+            <UFormGroup
+              label="Confirm Password"
+              name="confirmPassword"
+              class="w-full"
+            >
+              <UInput
+                v-model="state.confirmPassword"
+                :type="showConfirmPassword ? 'text' : 'password'"
+                placeholder="••••••••"
+                icon="i-lucide-shield-check"
+                size="lg"
+                variant="outline"
+                color="primary"
+                class="w-full"
+              >
                 <template #trailing>
-                  <UButton :icon="showConfirmPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'" color="neutral"
-                    variant="ghost" size="xs" tabindex="-1" @click="showConfirmPassword = !showConfirmPassword" />
+                  <UButton
+                    :icon="
+                      showConfirmPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'
+                    "
+                    color="neutral"
+                    variant="ghost"
+                    size="xs"
+                    tabindex="-1"
+                    @click="showConfirmPassword = !showConfirmPassword"
+                  />
                 </template>
               </UInput>
             </UFormGroup>
           </div>
 
-          <UButton type="submit" block size="lg" color="primary" :loading="loading" class="mt-2 transition-transform hover:scale-[1.02] active:scale-[0.98]">
+          <UButton
+            type="submit"
+            block
+            size="lg"
+            color="primary"
+            :loading="loading"
+            class="mt-2 transition-transform hover:scale-[1.02] active:scale-[0.98]"
+          >
             Create Account
           </UButton>
         </UForm>
 
         <div class="mt-6 text-center text-sm text-zinc-500 dark:text-zinc-400">
           Already have an account?
-          <NuxtLink to="/login" class="text-purple-600 dark:text-purple-400 hover:text-purple-500 dark:hover:text-purple-300 font-medium transition-colors">
+          <NuxtLink
+            to="/login"
+            class="text-purple-600 dark:text-purple-400 hover:text-purple-500 dark:hover:text-purple-300 font-medium transition-colors"
+          >
             Sign in
           </NuxtLink>
         </div>
@@ -76,10 +149,10 @@ const state = reactive({
   username: '',
   email: '',
   password: '',
-  confirmPassword: ''
+  confirmPassword: '',
 })
 
-const validate = (state: any) => {
+const validate = (state: typeof state) => {
   const errors = []
   if (!state.username) errors.push({ path: 'username', message: 'Required' })
   if (!state.email) {
@@ -87,7 +160,7 @@ const validate = (state: any) => {
   } else if (!state.email.includes('@') || !state.email.includes('.')) {
     errors.push({ path: 'email', message: 'Enter a valid email address' })
   }
-  
+
   if (!state.password) {
     errors.push({ path: 'password', message: 'Required' })
   } else {
@@ -95,10 +168,16 @@ const validate = (state: any) => {
       errors.push({ path: 'password', message: 'At least 8 characters' })
     }
     if (!/[A-Z]/.test(state.password)) {
-      errors.push({ path: 'password', message: 'At least one uppercase letter' })
+      errors.push({
+        path: 'password',
+        message: 'At least one uppercase letter',
+      })
     }
     if (!/[a-z]/.test(state.password)) {
-      errors.push({ path: 'password', message: 'At least one lowercase letter' })
+      errors.push({
+        path: 'password',
+        message: 'At least one lowercase letter',
+      })
     }
     if (!/[0-9]/.test(state.password)) {
       errors.push({ path: 'password', message: 'At least one number' })
@@ -111,11 +190,11 @@ const validate = (state: any) => {
   return errors
 }
 
-async function onError(event: any) {
+async function onError(event: { errors: { message: string }[] }) {
   useToast().add({
     title: 'Registration failed',
     description: event.errors[0].message,
-    color: 'error'
+    color: 'error',
   })
 }
 
@@ -123,11 +202,12 @@ async function onSubmit() {
   loading.value = true
   try {
     await register(state.username, state.email, state.password)
-  } catch (err: any) {
+  } catch (err) {
+    const error = err as { data?: { message?: string } }
     useToast().add({
       title: 'Registration failed',
-      description: err.data?.message || 'Something went wrong.',
-      color: 'error'
+      description: error.data?.message || 'Something went wrong.',
+      color: 'error',
     })
   } finally {
     loading.value = false
@@ -135,6 +215,6 @@ async function onSubmit() {
 }
 
 definePageMeta({
-  layout: false
+  layout: false,
 })
 </script>

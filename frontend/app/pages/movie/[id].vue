@@ -95,7 +95,8 @@ const providers = computed(() => {
   const res = movie.value?.['watch/providers']?.results
   if (!res) return null
 
-  const hasData = (r: any) => !!(r.flatrate?.length || r.rent?.length || r.buy?.length)
+  const hasData = (r: WatchRegion) =>
+    !!(r.flatrate?.length || r.rent?.length || r.buy?.length)
 
   if (res['FR'] && hasData(res['FR'])) return res['FR']
   if (res['US'] && hasData(res['US'])) return res['US']
@@ -108,7 +109,7 @@ const buyRentProviders = computed(() => {
   if (!providers.value) return []
   const all = [...(providers.value.rent || []), ...(providers.value.buy || [])]
   const seen = new Set()
-  return all.filter(p => {
+  return all.filter((p) => {
     const isDuplicate = seen.has(p.provider_id)
     seen.add(p.provider_id)
     return !isDuplicate
@@ -128,7 +129,11 @@ const buyRentProviders = computed(() => {
             <USkeleton class="h-10 w-3/4" />
             <USkeleton class="h-5 w-1/2" />
             <div class="flex gap-2">
-              <USkeleton v-for="i in 3" :key="i" class="h-6 w-20 rounded-full" />
+              <USkeleton
+                v-for="i in 3"
+                :key="i"
+                class="h-6 w-20 rounded-full"
+              />
             </div>
             <USkeleton class="h-5 w-2/3" />
           </div>
@@ -138,7 +143,10 @@ const buyRentProviders = computed(() => {
     </div>
 
     <!-- Error state -->
-    <UContainer v-else-if="error" class="py-24 flex flex-col items-center gap-6 text-center">
+    <UContainer
+      v-else-if="error"
+      class="py-24 flex flex-col items-center gap-6 text-center"
+    >
       <UIcon name="i-lucide-film" class="size-16 text-muted" />
       <div>
         <h2 class="text-2xl font-semibold">Movie not found</h2>
@@ -146,7 +154,12 @@ const buyRentProviders = computed(() => {
           This movie doesn't exist or could not be loaded.
         </p>
       </div>
-      <UButton to="/" color="neutral" variant="soft" leading-icon="i-lucide-arrow-left">
+      <UButton
+        to="/"
+        color="neutral"
+        variant="soft"
+        leading-icon="i-lucide-arrow-left"
+      >
         Back to home
       </UButton>
     </UContainer>
@@ -155,9 +168,22 @@ const buyRentProviders = computed(() => {
     <div v-else-if="movie">
       <!-- Backdrop -->
       <div class="relative h-[420px] overflow-hidden bg-muted">
-        <img v-if="backdropUrl" :src="backdropUrl" :alt="movie.title" class="w-full h-full object-cover" />
-        <div class="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
-        <UButton to="/" color="neutral" variant="soft" leading-icon="i-lucide-arrow-left" class="absolute top-4 left-4">
+        <img
+          v-if="backdropUrl"
+          :src="backdropUrl"
+          :alt="movie.title"
+          class="w-full h-full object-cover"
+        />
+        <div
+          class="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent"
+        />
+        <UButton
+          to="/"
+          color="neutral"
+          variant="soft"
+          leading-icon="i-lucide-arrow-left"
+          class="absolute top-4 left-4"
+        >
           Back
         </UButton>
       </div>
@@ -167,9 +193,16 @@ const buyRentProviders = computed(() => {
         <div class="flex flex-col sm:flex-row gap-8">
           <!-- Poster -->
           <div class="shrink-0">
-            <img v-if="posterUrl" :src="posterUrl" :alt="movie.title"
-              class="w-44 rounded-xl shadow-2xl ring-1 ring-white/10" />
-            <div v-else class="w-44 h-64 rounded-xl bg-elevated flex items-center justify-center ring-1 ring-white/10">
+            <img
+              v-if="posterUrl"
+              :src="posterUrl"
+              :alt="movie.title"
+              class="w-44 rounded-xl shadow-2xl ring-1 ring-white/10"
+            />
+            <div
+              v-else
+              class="w-44 h-64 rounded-xl bg-elevated flex items-center justify-center ring-1 ring-white/10"
+            >
               <UIcon name="i-lucide-film" class="size-12 text-muted" />
             </div>
           </div>
@@ -187,26 +220,42 @@ const buyRentProviders = computed(() => {
 
             <!-- Genres -->
             <div v-if="movie.genres?.length" class="flex flex-wrap gap-2">
-              <UBadge v-for="genre in movie.genres" :key="genre.id" color="primary" variant="soft">
+              <UBadge
+                v-for="genre in movie.genres"
+                :key="genre.id"
+                color="primary"
+                variant="soft"
+              >
                 {{ genre.name }}
               </UBadge>
             </div>
 
             <!-- Meta row -->
             <div class="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
-              <span v-if="releaseYear" class="flex items-center gap-1.5 text-muted">
+              <span
+                v-if="releaseYear"
+                class="flex items-center gap-1.5 text-muted"
+              >
                 <UIcon name="i-lucide-calendar" class="size-4 shrink-0" />
                 {{ releaseYear }}
               </span>
-              <span v-if="runtimeFormatted" class="flex items-center gap-1.5 text-muted">
+              <span
+                v-if="runtimeFormatted"
+                class="flex items-center gap-1.5 text-muted"
+              >
                 <UIcon name="i-lucide-clock" class="size-4 shrink-0" />
                 {{ runtimeFormatted }}
               </span>
               <span v-if="movie.vote_average" class="flex items-center gap-1.5">
-                <UIcon name="i-lucide-star" class="size-4 shrink-0 text-yellow-400 fill-yellow-400" />
+                <UIcon
+                  name="i-lucide-star"
+                  class="size-4 shrink-0 text-yellow-400 fill-yellow-400"
+                />
                 <span class="font-semibold">{{ rating }}</span>
                 <span class="text-muted">/10</span>
-                <span class="text-muted">({{ movie.vote_count.toLocaleString() }} votes)</span>
+                <span class="text-muted"
+                  >({{ movie.vote_count.toLocaleString() }} votes)</span
+                >
               </span>
             </div>
           </div>
@@ -220,8 +269,10 @@ const buyRentProviders = computed(() => {
           </p>
         </div>
 
-        <div v-if="providers"
-          class="mt-10 pt-8 border-t border-default animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div
+          v-if="providers"
+          class="mt-10 pt-8 border-t border-default animate-in fade-in slide-in-from-bottom-4 duration-700"
+        >
           <h2 class="text-lg font-semibold mb-6 flex items-center gap-2">
             <UIcon name="i-lucide-tv" class="size-5 text-primary" />
             Where to Watch
@@ -229,16 +280,29 @@ const buyRentProviders = computed(() => {
 
           <div class="flex flex-col sm:flex-row gap-8 sm:gap-16">
             <div v-if="providers.flatrate?.length">
-              <p class="text-xs uppercase tracking-widest text-muted font-bold mb-4">Streaming</p>
+              <p
+                class="text-xs uppercase tracking-widest text-muted font-bold mb-4"
+              >
+                Streaming
+              </p>
               <div class="flex flex-wrap gap-4">
-                <div v-for="p in providers.flatrate" :key="p.provider_id" class="group relative">
+                <div
+                  v-for="p in providers.flatrate"
+                  :key="p.provider_id"
+                  class="group relative"
+                >
                   <div
-                    class="size-12 rounded-xl overflow-hidden shadow-lg ring-1 ring-default group-hover:ring-primary group-hover:scale-110 transition-all duration-300">
-                    <img :src="`https://image.tmdb.org/t/p/original${p.logo_path}`" :alt="p.provider_name"
-                      class="w-full h-full object-cover" />
+                    class="size-12 rounded-xl overflow-hidden shadow-lg ring-1 ring-default group-hover:ring-primary group-hover:scale-110 transition-all duration-300"
+                  >
+                    <img
+                      :src="`https://image.tmdb.org/t/p/original${p.logo_path}`"
+                      :alt="p.provider_name"
+                      class="w-full h-full object-cover"
+                    />
                   </div>
                   <div
-                    class="absolute -bottom-9 left-1/2 -translate-x-1/2 bg-zinc-900 text-white text-[10px] px-2 py-1 rounded shadow-xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-20 pointer-events-none border border-white/10 uppercase tracking-tighter">
+                    class="absolute -bottom-9 left-1/2 -translate-x-1/2 bg-zinc-900 text-white text-[10px] px-2 py-1 rounded shadow-xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-20 pointer-events-none border border-white/10 uppercase tracking-tighter"
+                  >
                     {{ p.provider_name }}
                   </div>
                 </div>
@@ -246,16 +310,29 @@ const buyRentProviders = computed(() => {
             </div>
 
             <div v-if="buyRentProviders.length">
-              <p class="text-xs uppercase tracking-widest text-muted font-bold mb-4">Rent or Buy</p>
+              <p
+                class="text-xs uppercase tracking-widest text-muted font-bold mb-4"
+              >
+                Rent or Buy
+              </p>
               <div class="flex flex-wrap gap-4">
-                <div v-for="p in buyRentProviders" :key="p.provider_id" class="group relative">
+                <div
+                  v-for="p in buyRentProviders"
+                  :key="p.provider_id"
+                  class="group relative"
+                >
                   <div
-                    class="size-12 rounded-xl overflow-hidden shadow-lg ring-1 ring-default group-hover:ring-primary group-hover:scale-110 transition-all duration-300">
-                    <img :src="`https://image.tmdb.org/t/p/original${p.logo_path}`" :alt="p.provider_name"
-                      class="w-full h-full object-cover opacity-80 group-hover:opacity-100" />
+                    class="size-12 rounded-xl overflow-hidden shadow-lg ring-1 ring-default group-hover:ring-primary group-hover:scale-110 transition-all duration-300"
+                  >
+                    <img
+                      :src="`https://image.tmdb.org/t/p/original${p.logo_path}`"
+                      :alt="p.provider_name"
+                      class="w-full h-full object-cover opacity-80 group-hover:opacity-100"
+                    />
                   </div>
                   <div
-                    class="absolute -bottom-9 left-1/2 -translate-x-1/2 bg-zinc-900 text-white text-[10px] px-2 py-1 rounded shadow-xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-20 pointer-events-none border border-white/10 uppercase tracking-tighter">
+                    class="absolute -bottom-9 left-1/2 -translate-x-1/2 bg-zinc-900 text-white text-[10px] px-2 py-1 rounded shadow-xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-20 pointer-events-none border border-white/10 uppercase tracking-tighter"
+                  >
                     {{ p.provider_name }}
                   </div>
                 </div>
@@ -265,10 +342,15 @@ const buyRentProviders = computed(() => {
         </div>
 
         <div v-if="isAuthenticated" class="mt-10 pt-8 border-t border-default">
-          <MediaListActions :external-id="String(route.params.id)" media-type="movie" />
+          <MediaListActions
+            :external-id="String(route.params.id)"
+            media-type="movie"
+          />
         </div>
 
-        <div class="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-6 pt-8 border-t border-default">
+        <div
+          class="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-6 pt-8 border-t border-default"
+        >
           <div v-if="movie.status">
             <p class="text-xs uppercase tracking-widest text-muted mb-1">
               Status

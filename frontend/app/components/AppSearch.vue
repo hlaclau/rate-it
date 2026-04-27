@@ -27,12 +27,20 @@ const inputRef = ref<HTMLInputElement | null>(null)
 let debounceTimer: ReturnType<typeof setTimeout> | null = null
 
 const mediaResults = computed(() =>
-  results.value.filter((r) => r.media_type === 'movie' || r.media_type === 'tv').slice(0, 6)
+  results.value
+    .filter((r) => r.media_type === 'movie' || r.media_type === 'tv')
+    .slice(0, 6)
 )
 
-function displayTitle(r: MediaSearchResult) { return r.title ?? r.name ?? '' }
-function displayYear(r: MediaSearchResult) { return (r.release_date ?? r.first_air_date ?? '').slice(0, 4) }
-function mediaRoute(r: MediaSearchResult) { return r.media_type === 'tv' ? `/series/${r.id}` : `/movie/${r.id}` }
+function displayTitle(r: MediaSearchResult) {
+  return r.title ?? r.name ?? ''
+}
+function displayYear(r: MediaSearchResult) {
+  return (r.release_date ?? r.first_air_date ?? '').slice(0, 4)
+}
+function mediaRoute(r: MediaSearchResult) {
+  return r.media_type === 'tv' ? `/series/${r.id}` : `/movie/${r.id}`
+}
 
 watch(query, (q) => {
   if (debounceTimer) clearTimeout(debounceTimer)
@@ -110,21 +118,28 @@ router.afterEach(() => {
             @mousedown.prevent
           >
             <!-- Poster -->
-            <div class="shrink-0 w-9 h-[54px] rounded-md overflow-hidden bg-muted">
+            <div
+              class="shrink-0 w-9 h-[54px] rounded-md overflow-hidden bg-muted"
+            >
               <img
                 v-if="result.poster_path"
                 :src="`https://image.tmdb.org/t/p/w92${result.poster_path}`"
                 :alt="displayTitle(result)"
                 class="w-full h-full object-cover"
               />
-              <div v-else class="w-full h-full flex items-center justify-center">
+              <div
+                v-else
+                class="w-full h-full flex items-center justify-center"
+              >
                 <UIcon name="i-lucide-film" class="size-4 text-muted" />
               </div>
             </div>
 
             <!-- Info -->
             <div class="min-w-0 flex-1">
-              <p class="text-sm font-medium truncate group-hover:text-primary transition-colors">
+              <p
+                class="text-sm font-medium truncate group-hover:text-primary transition-colors"
+              >
                 {{ displayTitle(result) }}
               </p>
               <div class="flex items-center gap-1.5 mt-0.5">
@@ -135,9 +150,17 @@ router.afterEach(() => {
                 >
                   {{ result.media_type === 'tv' ? 'Series' : 'Movie' }}
                 </UBadge>
-                <span v-if="displayYear(result)" class="text-xs text-muted">{{ displayYear(result) }}</span>
-                <span v-if="result.vote_average" class="flex items-center gap-0.5 text-xs text-muted ml-auto">
-                  <UIcon name="i-lucide-star" class="size-3 text-yellow-400 fill-yellow-400" />
+                <span v-if="displayYear(result)" class="text-xs text-muted">{{
+                  displayYear(result)
+                }}</span>
+                <span
+                  v-if="result.vote_average"
+                  class="flex items-center gap-0.5 text-xs text-muted ml-auto"
+                >
+                  <UIcon
+                    name="i-lucide-star"
+                    class="size-3 text-yellow-400 fill-yellow-400"
+                  />
                   {{ result.vote_average.toFixed(1) }}
                 </span>
               </div>
