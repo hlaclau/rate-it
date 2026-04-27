@@ -12,15 +12,12 @@ export const useAuth = () => {
   const isAuthenticated = computed(() => !!user.value)
   const authInitialized = useState<boolean>('auth-initialized', () => false)
 
-  // Custom fetch function that handles credentials (cookies) and refresh logic
-  // We explicitly type apiFetch to avoid the "implicitly has any" error during circular initialization
   const apiFetch: typeof $fetch = $fetch.create({
     baseURL: `${config.public.apiBase}/api/`,
     onRequest({ options }) {
       options.credentials = 'include'
     },
     async onResponseError({ response, options }) {
-      // Create a local type-safe version of options to use our custom _retry property
       const fetchOptions = options as typeof options & { _retry?: boolean }
 
       if (response.status === 401 && !fetchOptions._retry) {
@@ -30,8 +27,6 @@ export const useAuth = () => {
             method: 'POST',
             credentials: 'include',
           })
-          // We cast to Parameters<typeof apiFetch>[1] to bridge the gap between 
-          // ResolvedFetchOptions and NitroFetchOptions without using 'any'
           await apiFetch(response.url, fetchOptions as Parameters<typeof apiFetch>[1])
         } catch {
           user.value = null

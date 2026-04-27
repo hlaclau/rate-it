@@ -1,34 +1,25 @@
 package domain
 
-// MediaParams is the unified parameter set for both text search and media discovery.
-// When Query is non-empty the TMDB search endpoint is used and discover-only params
-// (SortBy, YearFrom, YearTo, VoteAverageMin, VoteAverageMax) are ignored by TMDB.
-// When Query is empty the TMDB discover endpoint is used.
 type MediaParams struct {
-	// Text search
 	Query        string
 	IncludeAdult bool
 
-	// Shared by both modes
-	Type     string // "movie", "series", or "" / "all" for both
-	Language string // ISO 639-1, e.g. "fr"
-	Page     int    // 1–1000
+	Type     string
+	Language string
+	Page     int
 
-	// Discover mode only (ignored when Query is set)
-	SortBy         string  // see SortBy* constants below
+	SortBy         string
 	YearFrom       int
 	YearTo         int
-	VoteAverageMin float32 // 0–10
-	VoteAverageMax float32 // 0–10
-	VoteCountMin   int     // minimum number of votes; 0 means no filter
+	VoteAverageMin float32
+	VoteAverageMax float32
+	VoteCountMin   int
 
-	// Genre & platform filters (discover mode)
-	WithGenres    string // pipe-separated TMDB genre IDs, e.g. "28|12"
-	WatchProviders string // pipe-separated provider IDs, e.g. "8|337"
-	WatchRegion    string // ISO 3166-1, e.g. "US"; required when WatchProviders is set
+	WithGenres     string
+	WatchProviders string
+	WatchRegion    string
 }
 
-// Supported SortBy values for discover mode.
 const (
 	SortByPopularityDesc  = "popularity.desc"
 	SortByPopularityAsc   = "popularity.asc"

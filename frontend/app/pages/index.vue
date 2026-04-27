@@ -1,13 +1,29 @@
 <script setup lang="ts">
 const { user } = useAuth()
 
-const primaryLinks = computed(() => {
+interface HeroLink {
+  label: string
+  to?: string
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+  color?:
+    | 'primary'
+    | 'neutral'
+    | 'secondary'
+    | 'success'
+    | 'info'
+    | 'warning'
+    | 'error'
+  variant?: 'solid' | 'outline' | 'soft' | 'ghost' | 'link' | 'subtle'
+  icon?: string
+}
+
+const primaryLinks = computed<HeroLink[]>(() => {
   if (user.value) {
     return [
       {
         label: 'My List',
         size: 'xl',
-        color: 'purple',
+        color: 'primary',
         variant: 'solid',
         to: '/list',
         icon: 'i-lucide-bookmark',
@@ -26,7 +42,7 @@ const primaryLinks = computed(() => {
     {
       label: "Get Started — It's Free",
       size: 'xl',
-      color: 'purple',
+      color: 'primary',
       variant: 'solid',
       to: '/register',
     },
@@ -73,8 +89,7 @@ const features = [
   <div>
     <UPageHero
       description="Your personal space to track every movie and series you watch, rate them, and write reviews you'll actually care about."
-      :links="primaryLinks"
-    >
+      :links="primaryLinks">
       <template #title>
         Track what you watch.<br />
         <span class="text-purple-500">Own your taste.</span>
@@ -84,12 +99,8 @@ const features = [
     <UPageSection :features="features" />
 
     <UPageSection>
-      <UPageCTA
-        title="Start tracking in seconds."
-        description="Free forever. No algorithm. Just your list."
-        variant="subtle"
-        :links="primaryLinks"
-      />
+      <UPageCTA title="Start tracking in seconds." description="Free forever. No algorithm. Just your list."
+        variant="subtle" :links="primaryLinks" />
     </UPageSection>
   </div>
 </template>
