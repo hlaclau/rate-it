@@ -84,3 +84,10 @@ html {
 .animate-fade-up {
   animation: fadeSlideUp 0.5s ease forwards;
 }
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  scrollbar-width: none;
+}

@@ -22,7 +22,7 @@ defineProps<{ links: HeroLink[] }>()
 
 const config = useRuntimeConfig()
 
-const { data } = await useFetch<MediaResponse>(
+const { data, status } = await useFetch<MediaResponse>(
   `${config.public.apiBase}/api/media/search?sort_by=popularity.desc&page=1`,
   { lazy: true }
 )
@@ -39,6 +39,7 @@ const posters = computed(() =>
   <section class="relative min-h-screen flex items-center overflow-hidden bg-black">
     <!-- Poster mosaic background -->
     <div
+      v-show="status === 'success' && posters.length > 0"
       class="absolute inset-0 grid opacity-20"
       style="grid-template-columns: repeat(8, 1fr); grid-template-rows: repeat(2, 1fr);"
     >

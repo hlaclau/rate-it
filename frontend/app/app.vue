@@ -65,7 +65,7 @@ useSeoMeta({
   <UApp>
     <div class="min-h-screen flex flex-col">
       <header
-        class="sticky top-0 z-50 w-full border-b border-white/8 bg-black/60 backdrop-blur-md"
+        class="sticky top-0 z-50 w-full border-b border-white/8 dark:bg-black/60 bg-white/80 backdrop-blur-md"
       >
         <UContainer>
           <div class="flex items-center h-14 gap-6">

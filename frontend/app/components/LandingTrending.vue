@@ -124,10 +124,5 @@ function mediaRoute(r: MediaResult) {
       </NuxtLink>
     </div>
 
-    <!-- Hide scrollbar utility -->
-    <style>
-      .scrollbar-none::-webkit-scrollbar { display: none; }
-      .scrollbar-none { scrollbar-width: none; }
-    </style>
   </section>
 </template>
