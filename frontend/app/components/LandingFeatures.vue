@@ -33,7 +33,7 @@ const features = [
 </script>
 
 <template>
-  <section class="py-24 bg-background relative overflow-hidden">
+  <section class="py-24 bg-default relative overflow-hidden">
     <!-- Faint background glow -->
     <div
       class="absolute inset-0 pointer-events-none"

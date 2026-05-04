@@ -40,7 +40,7 @@ function mediaRoute(r: MediaResult) {
 </script>
 
 <template>
-  <section class="py-20 overflow-hidden bg-background">
+  <section class="py-20 overflow-hidden bg-default">
     <UContainer>
       <!-- Section header -->
       <div class="flex items-end justify-between mb-8">

@@ -12,7 +12,7 @@ defineProps<{ links: CTALink[] }>()
 </script>
 
 <template>
-  <section class="py-28 bg-background relative overflow-hidden">
+  <section class="py-28 bg-default relative overflow-hidden">
     <!-- Animated gradient background -->
     <div
       class="absolute inset-0 pointer-events-none"

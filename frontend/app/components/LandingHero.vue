@@ -36,7 +36,7 @@ const posters = computed(() =>
 </script>
 
 <template>
-  <section class="relative min-h-screen flex items-center overflow-hidden bg-background">
+  <section class="relative min-h-screen flex items-center overflow-hidden bg-default">
     <!-- Poster mosaic background -->
     <div
       v-show="status === 'success' && posters.length > 0"
