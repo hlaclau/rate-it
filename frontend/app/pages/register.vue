@@ -152,7 +152,7 @@ const state = reactive({
   confirmPassword: '',
 })
 
-const validate = (state: typeof state) => {
+const validate = (state: { username: string; email: string; password: string; confirmPassword: string }) => {
   const errors = []
   if (!state.username) errors.push({ path: 'username', message: 'Required' })
   if (!state.email) {
@@ -193,7 +193,7 @@ const validate = (state: typeof state) => {
 async function onError(event: { errors: { message: string }[] }) {
   useToast().add({
     title: 'Registration failed',
-    description: event.errors[0].message,
+    description: event.errors[0]?.message,
     color: 'error',
   })
 }

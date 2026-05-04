@@ -2,8 +2,6 @@
 @import '@nuxt/ui';
 
 @theme static {
-  --font-sans: 'Inter', sans-serif;
-
   --color-purple-50: #faf5ff;
   --color-purple-100: #f3e8ff;
   --color-purple-200: #e9d5ff;
@@ -15,6 +13,8 @@
   --color-purple-800: #6b21a8;
   --color-purple-900: #581c87;
   --color-purple-950: #3b0764;
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
 }
 
 html {
@@ -37,4 +37,78 @@ html {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #7e22ce; /* hover purple */
+}
+
+/* ── Cinematic landing utilities ── */
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: 0.03em;
+}
+
+.text-gradient-gold {
+  background: linear-gradient(135deg, #f5c518 0%, #e8a000 50%, #f5c518 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-purple {
+  background: linear-gradient(135deg, #c084fc 0%, #a855f7 50%, #7c3aed 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.glass-card {
+  background: color-mix(in srgb, var(--color-purple-50) 60%, transparent);
+  backdrop-filter: blur(12px);
+  border: 1px solid color-mix(in srgb, var(--color-purple-200) 50%, transparent);
+}
+
+@variant dark {
+  .glass-card {
+    background: color-mix(in srgb, var(--color-purple-950) 40%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-purple-700) 30%, transparent);
+  }
+}
+
+.hero-overlay {
+  background:
+    linear-gradient(to right, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,0.8) 100%),
+    linear-gradient(to bottom, rgba(255,255,255,0.3) 0%, transparent 30%, transparent 70%, rgba(255,255,255,0.7) 100%);
+}
+
+@variant dark {
+  .hero-overlay {
+    background:
+      linear-gradient(to right, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.7) 50%, rgba(0,0,0,0.85) 100%),
+      linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, transparent 30%, transparent 70%, rgba(0,0,0,0.9) 100%);
+  }
+}
+
+.poster-glow {
+  box-shadow: 0 8px 32px -4px color-mix(in srgb, var(--color-purple-900) 60%, transparent);
+}
+
+/* Fade-in for poster rows */
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fadeSlideUp 0.5s ease forwards;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  scrollbar-width: none;
 }

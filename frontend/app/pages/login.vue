@@ -95,7 +95,7 @@ const state = reactive({
   password: '',
 })
 
-const validate = (state: typeof state) => {
+const validate = (state: { email: string; password: string }) => {
   const errors = []
   if (!state.email) {
     errors.push({ path: 'email', message: 'Required' })

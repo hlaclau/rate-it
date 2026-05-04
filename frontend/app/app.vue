@@ -1,18 +1,8 @@
 <script setup lang="ts">
 useHead({
-  htmlAttrs: {
-    lang: 'en',
-  },
+  htmlAttrs: { lang: 'en' },
   meta: [{ name: 'viewport', content: 'width=device-width, initial-scale=1' }],
-  link: [
-    { rel: 'icon', href: '/favicon.ico' },
-    { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-    { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
-    {
-      rel: 'stylesheet',
-      href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap',
-    },
-  ],
+  link: [{ rel: 'icon', href: '/favicon.ico' }],
 })
 
 const { user, fetchMe, logout, authInitialized } = useAuth()
@@ -75,7 +65,7 @@ useSeoMeta({
   <UApp>
     <div class="min-h-screen flex flex-col">
       <header
-        class="sticky top-0 z-50 w-full border-b border-default bg-background/80 backdrop-blur-md"
+        class="sticky top-0 z-50 w-full border-b border-default bg-default/80 backdrop-blur-md"
       >
         <UContainer>
           <div class="flex items-center h-14 gap-6">
