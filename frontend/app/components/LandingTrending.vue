@@ -40,7 +40,7 @@ function mediaRoute(r: MediaResult) {
 </script>
 
 <template>
-  <section class="py-20 overflow-hidden bg-black">
+  <section class="py-20 overflow-hidden bg-background">
     <UContainer>
       <!-- Section header -->
       <div class="flex items-end justify-between mb-8">
@@ -48,13 +48,13 @@ function mediaRoute(r: MediaResult) {
           <p class="text-xs font-semibold tracking-widest uppercase text-purple-400 mb-2">
             What's hot right now
           </p>
-          <h2 class="font-display text-5xl sm:text-6xl text-white leading-none">
+          <h2 class="font-display text-5xl sm:text-6xl text-default leading-none">
             TRENDING
           </h2>
         </div>
         <NuxtLink
           to="/discover?sort_by=popularity.desc"
-          class="hidden sm:flex items-center gap-1.5 text-sm font-medium text-white/50 hover:text-purple-400 transition-colors"
+          class="hidden sm:flex items-center gap-1.5 text-sm font-medium text-muted hover:text-purple-400 transition-colors"
         >
           View all
           <UIcon name="i-lucide-arrow-right" class="size-4" />
@@ -117,7 +117,7 @@ function mediaRoute(r: MediaResult) {
     <div class="sm:hidden mt-4 px-4">
       <NuxtLink
         to="/discover?sort_by=popularity.desc"
-        class="flex items-center gap-1.5 text-sm font-medium text-white/50 hover:text-purple-400 transition-colors"
+        class="flex items-center gap-1.5 text-sm font-medium text-muted hover:text-purple-400 transition-colors"
       >
         View all trending
         <UIcon name="i-lucide-arrow-right" class="size-4" />
