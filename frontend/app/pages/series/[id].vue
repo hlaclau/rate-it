@@ -79,6 +79,7 @@ const episodeRuntime = computed(() => {
   const times = series.value?.episode_run_time
   if (!times?.length) return null
   const mins = times[0]
+  if (mins === undefined) return null
   const h = Math.floor(mins / 60)
   const m = mins % 60
   return h > 0 ? `${h}h ${m}m` : `${m}m`

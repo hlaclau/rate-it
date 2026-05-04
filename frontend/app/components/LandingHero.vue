@@ -18,7 +18,7 @@ interface MediaResponse {
   results: MediaResult[]
 }
 
-const props = defineProps<{ links: HeroLink[] }>()
+defineProps<{ links: HeroLink[] }>()
 
 const config = useRuntimeConfig()
 

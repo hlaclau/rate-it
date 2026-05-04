@@ -77,14 +77,14 @@ const needsMinVotes = computed(
 
 // USelectMenu works with full objects; bridge back to ID string on change
 const selectedPlatform = computed({
-  get: () => platforms.find((p) => watchProviders.value === p.value) ?? null,
+  get: () => platforms.find((p) => watchProviders.value === p.value) ?? undefined,
   set: (item) => {
     watchProviders.value = item?.value ?? ''
   },
 })
 
 const selectedGenre = computed({
-  get: () => genres.find((g) => withGenres.value === g.value) ?? null,
+  get: () => genres.find((g) => withGenres.value === g.value) ?? undefined,
   set: (item) => {
     withGenres.value = item?.value ?? ''
   },
@@ -201,8 +201,8 @@ const presets = [
       sortBy.value = 'popularity.desc'
       yearRange.value = [MIN_YEAR, MAX_YEAR]
       ratingRange.value = [0, 10]
-      watchProviders.value = []
-      withGenres.value = []
+      watchProviders.value = ''
+      withGenres.value = ''
     },
   },
   {
@@ -213,8 +213,8 @@ const presets = [
       sortBy.value = 'vote_average.desc'
       yearRange.value = [MIN_YEAR, MAX_YEAR]
       ratingRange.value = [7.0, 10]
-      watchProviders.value = []
-      withGenres.value = []
+      watchProviders.value = ''
+      withGenres.value = ''
     },
   },
   {
@@ -225,8 +225,8 @@ const presets = [
       sortBy.value = 'release_date.desc'
       yearRange.value = [MAX_YEAR - 1, MAX_YEAR]
       ratingRange.value = [0, 10]
-      watchProviders.value = []
-      withGenres.value = []
+      watchProviders.value = ''
+      withGenres.value = ''
     },
   },
 ]
@@ -257,8 +257,8 @@ function resetFilters() {
   sortBy.value = 'popularity.desc'
   yearRange.value = [MIN_YEAR, MAX_YEAR]
   ratingRange.value = [0, 10]
-  watchProviders.value = []
-  withGenres.value = []
+  watchProviders.value = ''
+  withGenres.value = ''
 }
 
 // --- Helpers ---
