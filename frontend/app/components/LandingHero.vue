@@ -36,7 +36,7 @@ const posters = computed(() =>
 </script>
 
 <template>
-  <section class="relative min-h-screen flex items-center overflow-hidden bg-black">
+  <section class="relative min-h-screen flex items-center overflow-hidden bg-background">
     <!-- Poster mosaic background -->
     <div
       v-show="status === 'success' && posters.length > 0"
@@ -58,10 +58,7 @@ const posters = computed(() =>
     </div>
 
     <!-- Gradient overlay -->
-    <div
-      class="absolute inset-0"
-      style="background: linear-gradient(to right, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.7) 50%, rgba(0,0,0,0.85) 100%), linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, transparent 30%, transparent 70%, rgba(0,0,0,0.9) 100%);"
-    />
+    <div class="absolute inset-0 hero-overlay" />
 
     <!-- Purple radial glow -->
     <div
@@ -81,13 +78,13 @@ const posters = computed(() =>
         </div>
 
         <!-- Headline -->
-        <h1 class="font-display text-7xl sm:text-8xl md:text-9xl leading-none text-white mb-4">
+        <h1 class="font-display text-7xl sm:text-8xl md:text-9xl leading-none text-default mb-4">
           TRACK EVERY&nbsp;FILM.<br />
           <span class="text-gradient-purple">OWN YOUR TASTE.</span>
         </h1>
 
         <!-- Subheadline -->
-        <p class="text-lg sm:text-xl text-white/60 max-w-xl mt-6 mb-10 leading-relaxed">
+        <p class="text-lg sm:text-xl text-muted max-w-xl mt-6 mb-10 leading-relaxed">
           Build your watchlist, rate films out of 10, write reviews you'll
           actually care about. Free, forever — no algorithm, just your list.
         </p>
@@ -110,9 +107,9 @@ const posters = computed(() =>
     </UContainer>
 
     <!-- Scroll cue -->
-    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-white/30 text-xs tracking-widest uppercase">
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-muted/60 text-xs tracking-widest uppercase">
       <span>Scroll</span>
-      <div class="w-px h-8 bg-white/20 animate-pulse" />
+      <div class="w-px h-8 bg-muted/30 animate-pulse" />
     </div>
   </section>
 </template>
