@@ -33,7 +33,7 @@ const features = [
 </script>
 
 <template>
-  <section class="py-24 bg-black relative overflow-hidden">
+  <section class="py-24 bg-background relative overflow-hidden">
     <!-- Faint background glow -->
     <div
       class="absolute inset-0 pointer-events-none"
@@ -46,7 +46,7 @@ const features = [
         <p class="text-xs font-semibold tracking-widest uppercase text-purple-400 mb-3">
           Everything you need
         </p>
-        <h2 class="font-display text-5xl sm:text-6xl md:text-7xl text-white leading-none">
+        <h2 class="font-display text-5xl sm:text-6xl md:text-7xl text-default leading-none">
           MADE FOR FILM LOVERS
         </h2>
       </div>
@@ -68,13 +68,13 @@ const features = [
 
           <!-- Text -->
           <div>
-            <p class="text-xs font-semibold tracking-widest uppercase text-white/40 mb-1">
+            <p class="text-xs font-semibold tracking-widest uppercase text-muted/70 mb-1">
               {{ feature.label }}
             </p>
-            <h3 class="text-lg font-bold text-white mb-2">
+            <h3 class="text-lg font-bold text-default mb-2">
               {{ feature.title }}
             </h3>
-            <p class="text-sm text-white/50 leading-relaxed">
+            <p class="text-sm text-muted leading-relaxed">
               {{ feature.description }}
             </p>
           </div>
