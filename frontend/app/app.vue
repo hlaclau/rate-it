@@ -65,7 +65,7 @@ useSeoMeta({
   <UApp>
     <div class="min-h-screen flex flex-col">
       <header
-        class="sticky top-0 z-50 w-full border-b border-white/8 dark:bg-black/60 bg-white/80 backdrop-blur-md"
+        class="sticky top-0 z-50 w-full border-b border-default bg-background/80 backdrop-blur-md"
       >
         <UContainer>
           <div class="flex items-center h-14 gap-6">
@@ -131,7 +131,7 @@ useSeoMeta({
         <NuxtPage />
       </main>
 
-      <footer class="border-t border-white/8 bg-black py-12 mt-auto">
+      <footer class="border-t border-default py-12 mt-auto">
         <UContainer>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div>
