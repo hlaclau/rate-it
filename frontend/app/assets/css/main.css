@@ -38,3 +38,49 @@ html {
 ::-webkit-scrollbar-thumb:hover {
   background: #7e22ce; /* hover purple */
 }
+
+/* ── Cinematic landing utilities ── */
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: 0.03em;
+}
+
+.text-gradient-gold {
+  background: linear-gradient(135deg, #f5c518 0%, #e8a000 50%, #f5c518 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-purple {
+  background: linear-gradient(135deg, #c084fc 0%, #a855f7 50%, #7c3aed 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.glass-card {
+  background: color-mix(in srgb, var(--color-purple-950) 40%, transparent);
+  backdrop-filter: blur(12px);
+  border: 1px solid color-mix(in srgb, var(--color-purple-700) 30%, transparent);
+}
+
+.poster-glow {
+  box-shadow: 0 8px 32px -4px color-mix(in srgb, var(--color-purple-900) 60%, transparent);
+}
+
+/* Fade-in for poster rows */
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fadeSlideUp 0.5s ease forwards;
+}
