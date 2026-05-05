@@ -48,7 +48,7 @@ run = """
 """
 
 [tasks.test]
-description = "Exécute les tests avec un rendu visuel amélioré"
+description = "Run tests with enhanced visual rendering"
 dir = "backend"
 run = "gotestsum --format dots ./..."
 
