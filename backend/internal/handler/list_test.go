@@ -182,10 +182,10 @@ func TestAddOrUpdate_MissingFields(t *testing.T) {
 	router := newListRouter(mock, "u1")
 
 	cases := []map[string]any{
-		{"source": "tmdb", "type": "movie", "status": "watched"},               // missing external_id
-		{"external_id": "550", "type": "movie", "status": "watched"},           // missing source
-		{"external_id": "550", "source": "tmdb", "status": "watched"},          // missing type
-		{"external_id": "550", "source": "tmdb", "type": "movie"},              // missing status
+		{"source": "tmdb", "type": "movie", "status": "watched"},      // missing external_id
+		{"external_id": "550", "type": "movie", "status": "watched"},  // missing source
+		{"external_id": "550", "source": "tmdb", "status": "watched"}, // missing type
+		{"external_id": "550", "source": "tmdb", "type": "movie"},     // missing status
 	}
 
 	for _, c := range cases {

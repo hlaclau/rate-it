@@ -191,7 +191,7 @@ func (h *AuthHandler) validateRegister(req registerRequest) string {
 	if len(req.Password) < 8 {
 		return "password must be at least 8 characters"
 	}
-	
+
 	var hasUpper, hasLower, hasDigit bool
 	for _, char := range req.Password {
 		switch {

@@ -17,12 +17,12 @@ import (
 // ── Mock ────────────────────────────────────────────────────────────────────
 
 type mockAuthUseCase struct {
-	registerFn           func(ctx context.Context, username, email, password string) (*domain.User, error)
-	loginFn              func(ctx context.Context, email, password string) (string, string, *domain.User, error)
-	refreshFn            func(ctx context.Context, refreshToken string) (string, string, error)
+	registerFn            func(ctx context.Context, username, email, password string) (*domain.User, error)
+	loginFn               func(ctx context.Context, email, password string) (string, string, *domain.User, error)
+	refreshFn             func(ctx context.Context, refreshToken string) (string, string, error)
 	validateAccessTokenFn func(tokenString string) (string, error)
-	getUserByIDFn        func(ctx context.Context, id string) (*domain.User, error)
-	logoutFn             func(ctx context.Context, userID string) error
+	getUserByIDFn         func(ctx context.Context, id string) (*domain.User, error)
+	logoutFn              func(ctx context.Context, userID string) error
 }
 
 func (m *mockAuthUseCase) Register(ctx context.Context, username, email, password string) (*domain.User, error) {

@@ -49,7 +49,7 @@ func (r *UserRepository) Create(ctx context.Context, u *domain.User) error {
 
 func (r *UserRepository) GetByEmail(ctx context.Context, email string) (*domain.User, error) {
 	const q = `SELECT id, username, email, password_hash, bio, avatar_url, created_at FROM users WHERE email = $1`
-	
+
 	var u domain.User
 	err := r.db.GetContext(ctx, &u, q, email)
 	if err != nil {
@@ -64,7 +64,7 @@ func (r *UserRepository) GetByEmail(ctx context.Context, email string) (*domain.
 
 func (r *UserRepository) GetByID(ctx context.Context, id string) (*domain.User, error) {
 	const q = `SELECT id, username, email, password_hash, bio, avatar_url, created_at FROM users WHERE id = $1`
-	
+
 	var u domain.User
 	err := r.db.GetContext(ctx, &u, q, id)
 	if err != nil {
