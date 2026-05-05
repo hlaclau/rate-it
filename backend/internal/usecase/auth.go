@@ -102,11 +102,11 @@ func (uc *AuthUseCase) Refresh(ctx context.Context, refreshToken string) (string
 	// if we don't send the userID.
 	// Actually, let's keep the refresh token as a JWT with userID claim to avoid extra roundtrips or complex keys.
 	// NO - user requested a stable School project style.
-	
+
 	// Let's modify the plan slightly: if RefreshToken is just a UUID, we need to know for WHICH user.
 	// Usually, we'd send the userID as well or the refresh token would be a JWT.
 	// I'll use a JWT for the refresh token to keep it simple (it contains the userID).
-	
+
 	claims := &jwt.RegisteredClaims{}
 	token, err := jwt.ParseWithClaims(refreshToken, claims, func(t *jwt.Token) (interface{}, error) {
 		return uc.secret, nil
