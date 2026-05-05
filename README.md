@@ -26,3 +26,7 @@ Here are the commands you can run for local development:
 | `mise run db-reset` | Wipe and restart databases (destroys data) |
 | `mise run lint` | Lint frontend and backend |
 | `mise run format` | Format frontend and backend |
+| `mise run test` | Run all backend tests (compact dots output) |
+| `mise run test-pretty` | Run all backend tests (verbose colored output) |
+| `mise run test-handlers` | Run handler tests only |
+| `mise run test-ci` | Run all tests without cache (for CI) |
