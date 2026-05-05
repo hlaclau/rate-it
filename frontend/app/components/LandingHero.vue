@@ -36,18 +36,19 @@ const posters = computed(() =>
 </script>
 
 <template>
-  <section class="relative min-h-screen flex items-center overflow-hidden bg-default">
+  <section
+    class="relative min-h-screen flex items-center overflow-hidden bg-default"
+  >
     <!-- Poster mosaic background -->
     <div
       v-show="status === 'success' && posters.length > 0"
       class="absolute inset-0 grid opacity-20"
-      style="grid-template-columns: repeat(8, 1fr); grid-template-rows: repeat(2, 1fr);"
+      style="
+        grid-template-columns: repeat(8, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+      "
     >
-      <div
-        v-for="(src, i) in posters"
-        :key="i"
-        class="overflow-hidden"
-      >
+      <div v-for="(src, i) in posters" :key="i" class="overflow-hidden">
         <img
           :src="src"
           alt=""
@@ -63,7 +64,13 @@ const posters = computed(() =>
     <!-- Purple radial glow -->
     <div
       class="absolute inset-0 pointer-events-none"
-      style="background: radial-gradient(ellipse 60% 50% at 30% 60%, rgba(168,85,247,0.18) 0%, transparent 70%);"
+      style="
+        background: radial-gradient(
+          ellipse 60% 50% at 30% 60%,
+          rgba(168, 85, 247, 0.18) 0%,
+          transparent 70%
+        );
+      "
     />
 
     <!-- Content -->
@@ -72,19 +79,25 @@ const posters = computed(() =>
         <!-- Eyebrow -->
         <div class="flex items-center gap-2 mb-6">
           <span class="inline-block w-8 h-px bg-purple-400" />
-          <span class="text-xs font-semibold tracking-widest uppercase text-purple-400">
+          <span
+            class="text-xs font-semibold tracking-widest uppercase text-purple-400"
+          >
             Your personal film diary
           </span>
         </div>
 
         <!-- Headline -->
-        <h1 class="font-display text-7xl sm:text-8xl md:text-9xl leading-none text-default mb-4">
+        <h1
+          class="font-display text-7xl sm:text-8xl md:text-9xl leading-none text-default mb-4"
+        >
           TRACK EVERY&nbsp;FILM.<br />
           <span class="text-gradient-purple">OWN YOUR TASTE.</span>
         </h1>
 
         <!-- Subheadline -->
-        <p class="text-lg sm:text-xl text-muted max-w-xl mt-6 mb-10 leading-relaxed">
+        <p
+          class="text-lg sm:text-xl text-muted max-w-xl mt-6 mb-10 leading-relaxed"
+        >
           Build your watchlist, rate films out of 10, write reviews you'll
           actually care about. Free, forever — no algorithm, just your list.
         </p>
@@ -107,7 +120,9 @@ const posters = computed(() =>
     </UContainer>
 
     <!-- Scroll cue -->
-    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-muted/60 text-xs tracking-widest uppercase">
+    <div
+      class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-muted/60 text-xs tracking-widest uppercase"
+    >
       <span>Scroll</span>
       <div class="w-px h-8 bg-muted/30 animate-pulse" />
     </div>

@@ -45,10 +45,14 @@ function mediaRoute(r: MediaResult) {
       <!-- Section header -->
       <div class="flex items-end justify-between mb-8">
         <div>
-          <p class="text-xs font-semibold tracking-widest uppercase text-purple-400 mb-2">
+          <p
+            class="text-xs font-semibold tracking-widest uppercase text-purple-400 mb-2"
+          >
             What's hot right now
           </p>
-          <h2 class="font-display text-5xl sm:text-6xl text-default leading-none">
+          <h2
+            class="font-display text-5xl sm:text-6xl text-default leading-none"
+          >
             TRENDING
           </h2>
         </div>
@@ -65,7 +69,7 @@ function mediaRoute(r: MediaResult) {
     <!-- Scrollable poster strip (no UContainer — bleeds to edges) -->
     <div
       class="flex gap-4 px-4 sm:px-8 overflow-x-auto pb-4 scrollbar-none"
-      style="scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;"
+      style="scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch"
     >
       <!-- Skeletons while loading -->
       <template v-if="status === 'pending'">
@@ -73,7 +77,7 @@ function mediaRoute(r: MediaResult) {
           v-for="i in 12"
           :key="i"
           class="flex-none w-36 sm:w-44"
-          style="scroll-snap-align: start;"
+          style="scroll-snap-align: start"
         >
           <USkeleton class="aspect-[2/3] w-full rounded-xl" />
         </div>
@@ -87,7 +91,9 @@ function mediaRoute(r: MediaResult) {
         class="group flex-none w-36 sm:w-44 animate-fade-up"
         :style="`scroll-snap-align: start; animation-delay: ${i * 40}ms;`"
       >
-        <div class="relative aspect-[2/3] rounded-xl overflow-hidden poster-glow">
+        <div
+          class="relative aspect-[2/3] rounded-xl overflow-hidden poster-glow"
+        >
           <img
             :src="`https://image.tmdb.org/t/p/w342${movie.poster_path}`"
             :alt="displayTitle(movie)"
@@ -98,12 +104,19 @@ function mediaRoute(r: MediaResult) {
           <div
             class="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3"
           >
-            <p class="text-white text-xs font-semibold line-clamp-2 leading-snug">
+            <p
+              class="text-white text-xs font-semibold line-clamp-2 leading-snug"
+            >
               {{ displayTitle(movie) }}
             </p>
             <div class="flex items-center justify-between mt-1.5">
-              <span class="text-white/60 text-xs">{{ displayYear(movie) }}</span>
-              <span v-if="movie.vote_average" class="flex items-center gap-1 text-xs text-yellow-400 font-medium">
+              <span class="text-white/60 text-xs">{{
+                displayYear(movie)
+              }}</span>
+              <span
+                v-if="movie.vote_average"
+                class="flex items-center gap-1 text-xs text-yellow-400 font-medium"
+              >
                 <UIcon name="i-lucide-star" class="size-3 fill-yellow-400" />
                 {{ movie.vote_average.toFixed(1) }}
               </span>
@@ -123,6 +136,5 @@ function mediaRoute(r: MediaResult) {
         <UIcon name="i-lucide-arrow-right" class="size-4" />
       </NuxtLink>
     </div>
-
   </section>
 </template>

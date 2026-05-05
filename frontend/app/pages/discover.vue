@@ -77,7 +77,8 @@ const needsMinVotes = computed(
 
 // USelectMenu works with full objects; bridge back to ID string on change
 const selectedPlatform = computed({
-  get: () => platforms.find((p) => watchProviders.value === p.value) ?? undefined,
+  get: () =>
+    platforms.find((p) => watchProviders.value === p.value) ?? undefined,
   set: (item) => {
     watchProviders.value = item?.value ?? ''
   },
@@ -89,8 +90,6 @@ const selectedGenre = computed({
     withGenres.value = item?.value ?? ''
   },
 })
-
-
 
 // --- Init / sync from URL ---
 function syncFromQuery(query: LocationQuery) {
@@ -108,9 +107,7 @@ function syncFromQuery(query: LocationQuery) {
   watchProviders.value = query.watch_providers
     ? String(query.watch_providers)
     : ''
-  withGenres.value = query.with_genres
-    ? String(query.with_genres)
-    : ''
+  withGenres.value = query.with_genres ? String(query.with_genres) : ''
 }
 
 syncFromQuery(route.query)
@@ -179,8 +176,7 @@ const apiUrl = computed(() => {
     params.set('watch_providers', watchProviders.value)
     params.set('watch_region', 'US')
   }
-  if (withGenres.value)
-    params.set('with_genres', withGenres.value)
+  if (withGenres.value) params.set('with_genres', withGenres.value)
   return `${config.public.apiBase}/api/media/search?${params.toString()}`
 })
 
