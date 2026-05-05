@@ -47,6 +47,21 @@ run = """
 (cd backend && go vet ./...)
 """
 
+[tasks.test]
+description = "Exécute les tests avec un rendu visuel amélioré"
+dir = "backend"
+run = "gotestsum --format dots ./..."
+
+[tasks."test-handlers"]
+description = "Run handler tests only"
+dir = "backend"
+run = "go test ./internal/handler/... -v"
+
+[tasks."test-ci"]
+description = "Run all tests without cache (for CI)"
+dir = "backend"
+run = "go test ./... -v -count=1"
+
 [tasks."install"]
 description = "Install all dependencies (requires mise)"
 run = """
