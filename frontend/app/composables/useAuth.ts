@@ -27,7 +27,10 @@ export const useAuth = () => {
             method: 'POST',
             credentials: 'include',
           })
-          await apiFetch(response.url, fetchOptions as Parameters<typeof apiFetch>[1])
+          await apiFetch(
+            response.url,
+            fetchOptions as Parameters<typeof apiFetch>[1]
+          )
         } catch {
           user.value = null
           await navigateTo('/login')

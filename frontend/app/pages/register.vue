@@ -152,7 +152,12 @@ const state = reactive({
   confirmPassword: '',
 })
 
-const validate = (state: { username: string; email: string; password: string; confirmPassword: string }) => {
+const validate = (state: {
+  username: string
+  email: string
+  password: string
+  confirmPassword: string
+}) => {
   const errors = []
   if (!state.username) errors.push({ path: 'username', message: 'Required' })
   if (!state.email) {

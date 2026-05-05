@@ -16,29 +16,48 @@ defineProps<{ links: CTALink[] }>()
     <!-- Animated gradient background -->
     <div
       class="absolute inset-0 pointer-events-none"
-      style="background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(88,28,135,0.35) 0%, rgba(59,7,100,0.15) 50%, transparent 70%);"
+      style="
+        background: radial-gradient(
+          ellipse 70% 60% at 50% 50%,
+          rgba(88, 28, 135, 0.35) 0%,
+          rgba(59, 7, 100, 0.15) 50%,
+          transparent 70%
+        );
+      "
     />
 
     <!-- Subtle grid pattern -->
     <div
       class="absolute inset-0 opacity-5 pointer-events-none"
-      style="background-image: linear-gradient(rgba(168,85,247,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(168,85,247,0.5) 1px, transparent 1px); background-size: 48px 48px;"
+      style="
+        background-image:
+          linear-gradient(rgba(168, 85, 247, 0.5) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(168, 85, 247, 0.5) 1px, transparent 1px);
+        background-size: 48px 48px;
+      "
     />
 
     <UContainer class="relative z-10 text-center">
       <!-- Badge -->
-      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary/30 bg-primary/10 mb-8">
+      <div
+        class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary/30 bg-primary/10 mb-8"
+      >
         <span class="size-1.5 rounded-full bg-green-400 animate-pulse" />
-        <span class="text-xs font-medium text-muted tracking-wide">Free forever · No credit card</span>
+        <span class="text-xs font-medium text-muted tracking-wide"
+          >Free forever · No credit card</span
+        >
       </div>
 
-      <h2 class="font-display text-6xl sm:text-7xl md:text-8xl text-default leading-none mb-6">
+      <h2
+        class="font-display text-6xl sm:text-7xl md:text-8xl text-default leading-none mb-6"
+      >
         START TRACKING<br />
         <span class="text-gradient-purple">IN SECONDS.</span>
       </h2>
 
       <p class="text-muted text-lg max-w-md mx-auto mb-10 leading-relaxed">
-        No algorithm pushing you what to watch. Just your list, your ratings, your taste.
+        No algorithm pushing you what to watch. Just your list, your ratings,
+        your taste.
       </p>
 
       <div class="flex flex-wrap justify-center gap-3">
