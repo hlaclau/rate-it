@@ -1,6 +1,7 @@
 [tools]
 go = "1.25"
-bun = "latest"
+bun = "latest"      
+"go:gotest.tools/gotestsum" = "latest"
 
 [tasks."db-up"]
 description = "Start PostgreSQL and Redis"
