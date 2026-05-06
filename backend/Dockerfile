@@ -9,6 +9,7 @@ FROM alpine:latest
 RUN apk --no-cache add ca-certificates tzdata
 WORKDIR /root/
 COPY --from=builder /app/api .
+COPY --from=builder /app/migrations ./migrations
 ENV PORT=8089
 EXPOSE 8089
 CMD ["./api"]
