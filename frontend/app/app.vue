@@ -90,6 +90,17 @@ useSeoMeta({
                   />
                 </button>
               </UDropdownMenu>
+              <NuxtLink
+                to="/community"
+                class="flex items-center gap-1 px-3 py-1.5 text-sm font-medium rounded-md transition-colors"
+                :class="
+                  $route.path === '/community'
+                    ? 'text-primary bg-primary/10'
+                    : 'text-muted hover:text-default hover:bg-elevated'
+                "
+              >
+                Community
+              </NuxtLink>
             </nav>
 
             <div class="flex-1" />
@@ -150,6 +161,12 @@ useSeoMeta({
                   class="text-sm font-medium text-muted hover:text-primary transition-colors"
                 >
                   Discover
+                </NuxtLink>
+                <NuxtLink
+                  to="/community"
+                  class="text-sm font-medium text-muted hover:text-primary transition-colors"
+                >
+                  Community
                 </NuxtLink>
                 <NuxtLink
                   to="/list"
