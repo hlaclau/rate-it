@@ -76,3 +76,35 @@ func (r *UserRepository) GetByID(ctx context.Context, id string) (*domain.User, 
 
 	return &u, nil
 }
+
+func (r *UserRepository) GetByUsername(ctx context.Context, username string) (*domain.User, error) {
+	const q = `SELECT id, username, email, password_hash, bio, avatar_url, created_at FROM users WHERE username = $1`
+
+	var u domain.User
+	err := r.db.GetContext(ctx, &u, q, username)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, port.ErrUserNotFound
+		}
+		return nil, fmt.Errorf("get user by username: %w", err)
+	}
+
+	return &u, nil
+}
+
+func (r *UserRepository) SearchByUsername(ctx context.Context, query string, limit int) ([]*domain.User, error) {
+	const q = `
+		SELECT id, username, email, password_hash, bio, avatar_url, created_at
+		FROM users
+		WHERE username ILIKE '%' || $1 || '%'
+		ORDER BY username
+		LIMIT $2`
+
+	var users []*domain.User
+	err := r.db.SelectContext(ctx, &users, q, query, limit)
+	if err != nil {
+		return nil, fmt.Errorf("search users by username: %w", err)
+	}
+
+	return users, nil
+}
