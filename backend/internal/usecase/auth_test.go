@@ -16,9 +16,11 @@ import (
 // ── Mocks ─────────────────────────────────────────────────────────────────────
 
 type mockUserRepository struct {
-	createFn     func(ctx context.Context, user *domain.User) error
-	getByEmailFn func(ctx context.Context, email string) (*domain.User, error)
-	getByIDFn    func(ctx context.Context, id string) (*domain.User, error)
+	createFn           func(ctx context.Context, user *domain.User) error
+	getByEmailFn       func(ctx context.Context, email string) (*domain.User, error)
+	getByIDFn          func(ctx context.Context, id string) (*domain.User, error)
+	getByUsernameFn    func(ctx context.Context, username string) (*domain.User, error)
+	searchByUsernameFn func(ctx context.Context, query string, limit int) ([]*domain.User, error)
 }
 
 func (m *mockUserRepository) Create(ctx context.Context, user *domain.User) error {
@@ -38,6 +40,20 @@ func (m *mockUserRepository) GetByID(ctx context.Context, id string) (*domain.Us
 		return m.getByIDFn(ctx, id)
 	}
 	return nil, port.ErrUserNotFound
+}
+
+func (m *mockUserRepository) GetByUsername(ctx context.Context, username string) (*domain.User, error) {
+	if m.getByUsernameFn != nil {
+		return m.getByUsernameFn(ctx, username)
+	}
+	return nil, port.ErrUserNotFound
+}
+
+func (m *mockUserRepository) SearchByUsername(ctx context.Context, query string, limit int) ([]*domain.User, error) {
+	if m.searchByUsernameFn != nil {
+		return m.searchByUsernameFn(ctx, query, limit)
+	}
+	return nil, nil
 }
 
 type mockSessionRepository struct {

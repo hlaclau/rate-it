@@ -75,6 +75,15 @@ func main() {
 		),
 	)
 
+	userHandler := handler.NewUserHandler(
+		usecase.NewUserUseCase(userRepo),
+		usecase.NewListUseCase(
+			repository.NewUserMediaRepository(db),
+			mediaRepo,
+			tmdbFetcher,
+		),
+	)
+
 	allowedOrigins := envOr("ALLOWED_ORIGINS", "http://localhost:3000")
 
 	r := chi.NewRouter()
@@ -98,6 +107,7 @@ func main() {
 		authHandler.Routes(r)
 		mediaHandler.Routes(r)
 		listHandler.Routes(r)
+		userHandler.Routes(r)
 	})
 
 	port := os.Getenv("PORT")
