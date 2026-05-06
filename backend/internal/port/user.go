@@ -20,6 +20,8 @@ type UserRepository interface {
 	Create(ctx context.Context, user *domain.User) error
 	GetByEmail(ctx context.Context, email string) (*domain.User, error)
 	GetByID(ctx context.Context, id string) (*domain.User, error)
+	GetByUsername(ctx context.Context, username string) (*domain.User, error)
+	SearchByUsername(ctx context.Context, query string, limit int) ([]*domain.User, error)
 }
 
 type AuthUseCase interface {
@@ -29,4 +31,9 @@ type AuthUseCase interface {
 	ValidateAccessToken(tokenString string) (userID string, err error)
 	GetUserByID(ctx context.Context, id string) (*domain.User, error)
 	Logout(ctx context.Context, userID string) error
+}
+
+type UserUseCase interface {
+	SearchUsers(ctx context.Context, query string) ([]*domain.User, error)
+	GetByUsername(ctx context.Context, username string) (*domain.User, error)
 }
