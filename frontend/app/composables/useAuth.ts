@@ -8,6 +8,7 @@ export interface User {
 
 export const useAuth = () => {
   const config = useRuntimeConfig()
+  const route = useRoute()
   const user = useState<User | null>('auth-user', () => null)
   const isAuthenticated = computed(() => !!user.value)
   const authInitialized = useState<boolean>('auth-initialized', () => false)
@@ -40,7 +41,6 @@ export const useAuth = () => {
   })
 
   const login = async (email: string, password: string) => {
-    const route = useRoute()
     const data = await apiFetch<User>('login', {
       method: 'POST',
       body: { email, password },
