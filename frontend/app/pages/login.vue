@@ -98,12 +98,12 @@ const state = reactive({
 const validate = (state: { email: string; password: string }) => {
   const errors = []
   if (!state.email) {
-    errors.push({ path: 'email', message: 'Required' })
+    errors.push({ name: 'email', message: 'Required' })
   } else if (!state.email.includes('@') || !state.email.includes('.')) {
-    errors.push({ path: 'email', message: 'Enter a valid email address' })
+    errors.push({ name: 'email', message: 'Enter a valid email address' })
   }
   if (!state.password) {
-    errors.push({ path: 'password', message: 'Required' })
+    errors.push({ name: 'password', message: 'Required' })
   }
   return errors
 }

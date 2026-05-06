@@ -159,38 +159,38 @@ const validate = (state: {
   confirmPassword: string
 }) => {
   const errors = []
-  if (!state.username) errors.push({ path: 'username', message: 'Required' })
+  if (!state.username) errors.push({ name: 'username', message: 'Required' })
   if (!state.email) {
-    errors.push({ path: 'email', message: 'Required' })
+    errors.push({ name: 'email', message: 'Required' })
   } else if (!state.email.includes('@') || !state.email.includes('.')) {
-    errors.push({ path: 'email', message: 'Enter a valid email address' })
+    errors.push({ name: 'email', message: 'Enter a valid email address' })
   }
 
   if (!state.password) {
-    errors.push({ path: 'password', message: 'Required' })
+    errors.push({ name: 'password', message: 'Required' })
   } else {
     if (state.password.length < 8) {
-      errors.push({ path: 'password', message: 'At least 8 characters' })
+      errors.push({ name: 'password', message: 'At least 8 characters' })
     }
     if (!/[A-Z]/.test(state.password)) {
       errors.push({
-        path: 'password',
+        name: 'password',
         message: 'At least one uppercase letter',
       })
     }
     if (!/[a-z]/.test(state.password)) {
       errors.push({
-        path: 'password',
+        name: 'password',
         message: 'At least one lowercase letter',
       })
     }
     if (!/[0-9]/.test(state.password)) {
-      errors.push({ path: 'password', message: 'At least one number' })
+      errors.push({ name: 'password', message: 'At least one number' })
     }
   }
 
   if (state.password && state.password !== state.confirmPassword) {
-    errors.push({ path: 'confirmPassword', message: 'Passwords do not match' })
+    errors.push({ name: 'confirmPassword', message: 'Passwords do not match' })
   }
   return errors
 }
