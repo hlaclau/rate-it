@@ -2,6 +2,7 @@ package handler
 
 import (
 	"errors"
+	"log/slog"
 	"net/http"
 	"strconv"
 
@@ -152,5 +153,6 @@ func writeError(w http.ResponseWriter, err error) {
 		http.Error(w, `{"error":"not found"}`, http.StatusNotFound)
 		return
 	}
+	slog.Error("internal server error", "error", err)
 	http.Error(w, `{"error":"internal server error"}`, http.StatusInternalServerError)
 }

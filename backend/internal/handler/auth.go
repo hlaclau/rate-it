@@ -3,6 +3,7 @@ package handler
 import (
 	"encoding/json"
 	"errors"
+	"log/slog"
 	"net/http"
 	"strings"
 	"time"
@@ -53,6 +54,7 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 			h.writeError(w, err.Error(), http.StatusConflict)
 			return
 		}
+		slog.Error("register", "error", err)
 		h.writeError(w, "internal server error", http.StatusInternalServerError)
 		return
 	}
@@ -86,6 +88,7 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 			h.writeError(w, err.Error(), http.StatusUnauthorized)
 			return
 		}
+		slog.Error("login", "error", err)
 		h.writeError(w, "internal server error", http.StatusInternalServerError)
 		return
 	}

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"log"
+	"log/slog"
 	"net/http"
 	"os"
 	"strings"
@@ -20,8 +20,10 @@ import (
 )
 
 func main() {
+	slog.SetDefault(slog.New(slog.NewJSONHandler(os.Stdout, nil)))
+
 	if err := godotenv.Load(); err != nil {
-		log.Println("no .env file found, using environment variables")
+		slog.Info("no .env file found, using environment variables")
 	}
 
 	dsn := mustEnv("DATABASE_URL")
@@ -30,20 +32,25 @@ func main() {
 
 	db, err := database.Open(dsn)
 	if err != nil {
-		log.Fatalf("connect db: %v", err)
+		slog.Error("connect db", "error", err)
+		os.Exit(1)
 	}
 	defer db.Close()
+	slog.Info("database connected")
 
 	if err = database.Migrate(db, "file://migrations"); err != nil {
-		log.Fatalf("migrate: %v", err)
+		slog.Error("migrate", "error", err)
+		os.Exit(1)
 	}
-	log.Println("migrations applied")
+	slog.Info("migrations applied")
 
 	redisClient, err := pkgredis.New(redisURL)
 	if err != nil {
-		log.Fatalf("connect redis: %v", err)
+		slog.Error("connect redis", "error", err)
+		os.Exit(1)
 	}
 	defer redisClient.Close()
+	slog.Info("redis connected")
 
 	userRepo := repository.NewUserRepository(db)
 	sessionCache := adaptercache.NewSessionCache(redisClient)
@@ -68,11 +75,13 @@ func main() {
 		),
 	)
 
+	allowedOrigins := envOr("ALLOWED_ORIGINS", "http://localhost:3000")
+
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 	r.Use(cors.Handler(cors.Options{
-		AllowedOrigins:   strings.Split(envOr("ALLOWED_ORIGINS", "http://localhost:3000"), ","),
+		AllowedOrigins:   strings.Split(allowedOrigins, ","),
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "Cookie"},
 		AllowCredentials: true,
@@ -96,16 +105,18 @@ func main() {
 		port = "8080"
 	}
 
-	log.Printf("starting server on :%s", port)
+	slog.Info("starting server", "port", port, "allowed_origins", allowedOrigins)
 	if err = http.ListenAndServe(":"+port, r); err != nil {
-		log.Fatal(err)
+		slog.Error("server error", "error", err)
+		os.Exit(1)
 	}
 }
 
 func mustEnv(key string) string {
 	v := os.Getenv(key)
 	if v == "" {
-		log.Fatalf("%s is required", key)
+		slog.Error("required env var missing", "key", key)
+		os.Exit(1)
 	}
 	return v
 }

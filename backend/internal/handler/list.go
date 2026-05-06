@@ -3,6 +3,7 @@ package handler
 import (
 	"encoding/json"
 	"errors"
+	"log/slog"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -152,6 +153,7 @@ func (h *ListHandler) writeError(w http.ResponseWriter, err error) {
 		h.writeJSON(w, http.StatusNotFound, map[string]string{"message": "media not found"})
 		return
 	}
+	slog.Error("internal server error", "error", err)
 	h.writeJSON(w, http.StatusInternalServerError, map[string]string{"message": "internal server error"})
 }
 
