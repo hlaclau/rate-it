@@ -57,11 +57,7 @@ useSeoMeta({ title: 'Community — Rate It' })
         :to="`/list/${u.username}`"
         class="flex items-center gap-4 p-4 rounded-xl bg-elevated ring-1 ring-default hover:ring-primary transition-all"
       >
-        <UAvatar
-          :src="u.avatar_url ?? undefined"
-          :alt="u.username"
-          size="md"
-        />
+        <UAvatar :src="u.avatar_url ?? undefined" :alt="u.username" size="md" />
         <span class="font-medium">{{ u.username }}</span>
         <UIcon
           name="i-lucide-chevron-right"

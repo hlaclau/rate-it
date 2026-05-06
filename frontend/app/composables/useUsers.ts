@@ -33,7 +33,8 @@ export const useUsers = () => {
       )
       return { entries: entries ?? [], notFound: false }
     } catch (err: unknown) {
-      const status = (err as { response?: { status?: number } })?.response?.status
+      const status = (err as { response?: { status?: number } })?.response
+        ?.status
       if (status === 404) {
         return { entries: [], notFound: true }
       }
