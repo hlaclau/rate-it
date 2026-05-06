@@ -36,9 +36,6 @@ export default defineNuxtConfig({
     },
   },
 
-  routeRules: {
-    '/': { prerender: true },
-  },
 
   compatibilityDate: '2025-01-15',
 
