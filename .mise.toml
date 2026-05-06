@@ -1,6 +1,7 @@
 [tools]
 go = "1.25"
-bun = "latest"
+bun = "latest"      
+"go:gotest.tools/gotestsum" = "latest"
 
 [tasks."db-up"]
 description = "Start PostgreSQL and Redis"
@@ -65,7 +66,6 @@ run = "go test ./... -v -count=1"
 [tasks."install"]
 description = "Install all dependencies (requires mise)"
 run = """
-mise install
 (cd frontend && bun install)
 (cd backend && go mod download)
 """
