@@ -15,15 +15,14 @@
       <div
         class="bg-white dark:bg-zinc-900/50 backdrop-blur-xl border border-zinc-200 dark:border-zinc-800 p-8 rounded-2xl shadow-xl dark:shadow-2xl w-full"
       >
-        <UForm
-          :state="state"
-          :validate="validate"
-          class="w-full"
-          @submit="onSubmit"
-          @error="onError"
-        >
+        <form class="w-full" @submit.prevent="onSubmit">
           <div class="mb-6">
-            <UFormGroup label="Username" name="username" class="w-full">
+            <UFormField
+              label="Username"
+              name="username"
+              :error="errors.username || undefined"
+              class="w-full"
+            >
               <UInput
                 v-model="state.username"
                 placeholder="username"
@@ -33,11 +32,16 @@
                 color="primary"
                 class="w-full"
               />
-            </UFormGroup>
+            </UFormField>
           </div>
 
           <div class="mb-6">
-            <UFormGroup label="Email" name="email" class="w-full">
+            <UFormField
+              label="Email"
+              name="email"
+              :error="errors.email || undefined"
+              class="w-full"
+            >
               <UInput
                 v-model="state.email"
                 placeholder="you@example.com"
@@ -47,15 +51,16 @@
                 color="primary"
                 class="w-full"
               />
-            </UFormGroup>
+            </UFormField>
           </div>
 
           <div class="mb-6">
-            <UFormGroup
+            <UFormField
               label="Password"
               name="password"
-              class="w-full"
+              :error="errors.password || undefined"
               help="Min. 8 characters, including 1 uppercase, 1 lowercase and 1 number"
+              class="w-full"
             >
               <UInput
                 v-model="state.password"
@@ -74,17 +79,19 @@
                     variant="ghost"
                     size="xs"
                     tabindex="-1"
+                    type="button"
                     @click="showPassword = !showPassword"
                   />
                 </template>
               </UInput>
-            </UFormGroup>
+            </UFormField>
           </div>
 
           <div class="mb-6">
-            <UFormGroup
+            <UFormField
               label="Confirm Password"
               name="confirmPassword"
+              :error="errors.confirmPassword || undefined"
               class="w-full"
             >
               <UInput
@@ -106,24 +113,29 @@
                     variant="ghost"
                     size="xs"
                     tabindex="-1"
+                    type="button"
                     @click="showConfirmPassword = !showConfirmPassword"
                   />
                 </template>
               </UInput>
-            </UFormGroup>
+            </UFormField>
           </div>
 
-          <UButton
+          <button
             type="submit"
-            block
-            size="lg"
-            color="primary"
-            :loading="loading"
-            class="mt-2 transition-transform hover:scale-[1.02] active:scale-[0.98]"
+            :disabled="loading"
+            class="mt-2 w-full flex items-center justify-center px-4 py-2.5 rounded-lg text-sm font-semibold text-white bg-purple-600 hover:bg-purple-500 disabled:opacity-60 disabled:cursor-not-allowed transition-transform hover:scale-[1.02] active:scale-[0.98]"
           >
-            Create Account
-          </UButton>
-        </UForm>
+            <span v-if="loading" class="flex items-center gap-2">
+              <UIcon
+                name="i-lucide-loader-circle"
+                class="size-4 animate-spin"
+              />
+              Creating account…
+            </span>
+            <span v-else>Create Account</span>
+          </button>
+        </form>
 
         <div class="mt-6 text-center text-sm text-zinc-500 dark:text-zinc-400">
           Already have an account?
@@ -152,58 +164,57 @@ const state = reactive({
   confirmPassword: '',
 })
 
-const validate = (state: {
-  username: string
-  email: string
-  password: string
-  confirmPassword: string
-}) => {
-  const errors = []
-  if (!state.username) errors.push({ name: 'username', message: 'Required' })
-  if (!state.email) {
-    errors.push({ name: 'email', message: 'Required' })
-  } else if (!state.email.includes('@') || !state.email.includes('.')) {
-    errors.push({ name: 'email', message: 'Enter a valid email address' })
-  }
+const errors = reactive({
+  username: '',
+  email: '',
+  password: '',
+  confirmPassword: '',
+})
 
+function validate() {
+  errors.username = ''
+  errors.email = ''
+  errors.password = ''
+  errors.confirmPassword = ''
+  let valid = true
+  if (!state.username) {
+    errors.username = 'Required'
+    valid = false
+  }
+  if (!state.email) {
+    errors.email = 'Required'
+    valid = false
+  } else if (!state.email.includes('@') || !state.email.includes('.')) {
+    errors.email = 'Enter a valid email address'
+    valid = false
+  }
   if (!state.password) {
-    errors.push({ name: 'password', message: 'Required' })
+    errors.password = 'Required'
+    valid = false
   } else {
     if (state.password.length < 8) {
-      errors.push({ name: 'password', message: 'At least 8 characters' })
-    }
-    if (!/[A-Z]/.test(state.password)) {
-      errors.push({
-        name: 'password',
-        message: 'At least one uppercase letter',
-      })
-    }
-    if (!/[a-z]/.test(state.password)) {
-      errors.push({
-        name: 'password',
-        message: 'At least one lowercase letter',
-      })
-    }
-    if (!/[0-9]/.test(state.password)) {
-      errors.push({ name: 'password', message: 'At least one number' })
+      errors.password = 'At least 8 characters'
+      valid = false
+    } else if (!/[A-Z]/.test(state.password)) {
+      errors.password = 'At least one uppercase letter'
+      valid = false
+    } else if (!/[a-z]/.test(state.password)) {
+      errors.password = 'At least one lowercase letter'
+      valid = false
+    } else if (!/[0-9]/.test(state.password)) {
+      errors.password = 'At least one number'
+      valid = false
     }
   }
-
   if (state.password && state.password !== state.confirmPassword) {
-    errors.push({ name: 'confirmPassword', message: 'Passwords do not match' })
+    errors.confirmPassword = 'Passwords do not match'
+    valid = false
   }
-  return errors
-}
-
-async function onError(event: { errors: { message: string }[] }) {
-  useToast().add({
-    title: 'Registration failed',
-    description: event.errors[0]?.message,
-    color: 'error',
-  })
+  return valid
 }
 
 async function onSubmit() {
+  if (!validate()) return
   loading.value = true
   try {
     await register(state.username, state.email, state.password)
