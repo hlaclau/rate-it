@@ -15,14 +15,14 @@
       <div
         class="bg-white dark:bg-zinc-900/50 backdrop-blur-xl border border-zinc-200 dark:border-zinc-800 p-8 rounded-2xl shadow-xl dark:shadow-2xl w-full"
       >
-        <UForm
-          :state="state"
-          :validate="validate"
-          class="w-full"
-          @submit="onSubmit"
-        >
+        <form class="w-full" @submit.prevent="onSubmit">
           <div class="mb-6">
-            <UFormGroup label="Email" name="email" class="w-full">
+            <UFormField
+              label="Email"
+              name="email"
+              :error="errors.email || undefined"
+              class="w-full"
+            >
               <UInput
                 v-model="state.email"
                 placeholder="you@example.com"
@@ -32,10 +32,15 @@
                 color="primary"
                 class="w-full"
               />
-            </UFormGroup>
+            </UFormField>
           </div>
 
-          <UFormGroup label="Password" name="password" class="w-full">
+          <UFormField
+            label="Password"
+            name="password"
+            :error="errors.password || undefined"
+            class="w-full"
+          >
             <UInput
               v-model="state.password"
               :type="showPassword ? 'text' : 'password'"
@@ -53,23 +58,28 @@
                   variant="ghost"
                   size="xs"
                   tabindex="-1"
+                  type="button"
                   @click="showPassword = !showPassword"
                 />
               </template>
             </UInput>
-          </UFormGroup>
+          </UFormField>
 
-          <UButton
+          <button
             type="submit"
-            block
-            size="lg"
-            color="primary"
-            :loading="loading"
-            class="mt-8 transition-transform hover:scale-[1.02] active:scale-[0.98]"
+            :disabled="loading"
+            class="mt-8 w-full flex items-center justify-center px-4 py-2.5 rounded-lg text-sm font-semibold text-white bg-purple-600 hover:bg-purple-500 disabled:opacity-60 disabled:cursor-not-allowed transition-transform hover:scale-[1.02] active:scale-[0.98]"
           >
-            Sign in
-          </UButton>
-        </UForm>
+            <span v-if="loading" class="flex items-center gap-2">
+              <UIcon
+                name="i-lucide-loader-circle"
+                class="size-4 animate-spin"
+              />
+              Signing in…
+            </span>
+            <span v-else>Sign in</span>
+          </button>
+        </form>
 
         <div class="mt-6 text-center text-sm text-zinc-500 dark:text-zinc-400">
           Don't have an account?
@@ -95,20 +105,31 @@ const state = reactive({
   password: '',
 })
 
-const validate = (state: { email: string; password: string }) => {
-  const errors = []
+const errors = reactive({
+  email: '',
+  password: '',
+})
+
+function validate() {
+  errors.email = ''
+  errors.password = ''
+  let valid = true
   if (!state.email) {
-    errors.push({ name: 'email', message: 'Required' })
+    errors.email = 'Required'
+    valid = false
   } else if (!state.email.includes('@') || !state.email.includes('.')) {
-    errors.push({ name: 'email', message: 'Enter a valid email address' })
+    errors.email = 'Enter a valid email address'
+    valid = false
   }
   if (!state.password) {
-    errors.push({ name: 'password', message: 'Required' })
+    errors.password = 'Required'
+    valid = false
   }
-  return errors
+  return valid
 }
 
 async function onSubmit() {
+  if (!validate()) return
   loading.value = true
   try {
     await login(state.email, state.password)

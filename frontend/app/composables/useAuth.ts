@@ -34,7 +34,9 @@ export const useAuth = () => {
           )
         } catch {
           user.value = null
-          await navigateTo('/login')
+          if (route.path !== '/login') {
+            await navigateTo('/login')
+          }
         }
       }
     },
