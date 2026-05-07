@@ -1,0 +1,33 @@
+meta {
+  name: add or update
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{base_url}}/api/list
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "external_id": "550",
+    "source": "tmdb",
+    "type": "movie",
+    "status": "watched",
+    "rating": 8,
+    "review": "Great movie!"
+  }
+}
+
+docs {
+  Adds a new media entry or updates an existing one.
+  Required fields: external_id, source, type, status.
+  Optional fields: rating (1-10), review.
+  Requires a valid session cookie.
+
+  source: "tmdb"
+  type: "movie" | "series" | "book"
+  status: "watched" | "plan_to_watch"
+}

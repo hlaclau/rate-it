@@ -137,6 +137,57 @@ rate-it/
 └── docker-compose.dev.yml  # PostgreSQL + Redis for local dev
 ```
 
+## API Routes
+
+The Go API is available at `http://localhost:8080`. All `/api/*` routes are prefixed automatically.
+
+### Auth
+
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| `POST` | `/api/register` | — | Register a new user |
+| `POST` | `/api/login` | — | Log in and start a session |
+| `POST` | `/api/refresh` | Cookie | Refresh the session token |
+| `POST` | `/api/logout` | Cookie | Invalidate the session |
+| `GET` | `/api/me` | Cookie | Get the authenticated user |
+
+### Media
+
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| `GET` | `/api/media/movie/{id}` | — | Get movie details by TMDB ID |
+| `GET` | `/api/media/series/{id}` | — | Get series details by TMDB ID |
+| `GET` | `/api/media/search` | — | Search or discover media |
+
+`/api/media/search` query parameters: `q`, `type`, `page`, `sort_by`, `year_from`, `year_to`, `vote_average_min`, `vote_average_max`, `vote_count_min`, `with_genres`, `watch_providers`, `watch_region`, `language`, `include_adult`.
+
+### List
+
+All list routes require a valid session cookie.
+
+| Method | Path | Description |
+|---|---|---|
+| `GET` | `/api/list` | Get the authenticated user's list |
+| `POST` | `/api/list` | Add or update a media entry |
+| `PUT` | `/api/list/{mediaID}` | Update an existing entry |
+| `DELETE` | `/api/list/{mediaID}` | Remove an entry |
+| `GET` | `/api/list/status/{externalID}` | Get the list status of a media item |
+
+### Users
+
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| `GET` | `/api/users/search` | — | Search users by username (`q` param, min 2 chars) |
+| `GET` | `/api/users/{username}/list` | — | Get a user's public list |
+
+### Health
+
+| Method | Path | Description |
+|---|---|---|
+| `GET` | `/health` | Health check |
+
+Bruno API collection is available in `docs/api/`.
+
 ## Environment Variables
 
 Backend configuration lives in `backend/.env`. Copy `backend/.env.example` to get started — all defaults are pre-configured for the local Docker setup.

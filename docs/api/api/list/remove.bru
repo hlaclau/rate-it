@@ -1,0 +1,20 @@
+meta {
+  name: remove
+  type: http
+  seq: 4
+}
+
+delete {
+  url: {{base_url}}/api/list/:mediaID
+  body: none
+  auth: none
+}
+
+params:path {
+  mediaID: 1
+}
+
+docs {
+  Removes a media entry from the authenticated user's list.
+  Requires a valid session cookie.
+}

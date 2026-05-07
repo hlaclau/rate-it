@@ -1,0 +1,20 @@
+meta {
+  name: search
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/api/users/search
+  body: none
+  auth: none
+}
+
+params:query {
+  q: alice
+}
+
+docs {
+  Searches for users by username prefix.
+  Query param: q (minimum 2 characters, shorter queries return an empty array).
+}

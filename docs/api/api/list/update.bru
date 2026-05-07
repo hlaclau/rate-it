@@ -1,0 +1,32 @@
+meta {
+  name: update
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{base_url}}/api/list/:mediaID
+  body: json
+  auth: none
+}
+
+params:path {
+  mediaID: 1
+}
+
+body:json {
+  {
+    "status": "watched",
+    "rating": 9,
+    "review": "Even better on rewatch."
+  }
+}
+
+docs {
+  Updates an existing list entry by its internal mediaID.
+  Required fields: status.
+  Optional fields: rating (1-10), review.
+  Requires a valid session cookie.
+
+  status: "watched" | "plan_to_watch"
+}

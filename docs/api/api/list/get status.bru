@@ -1,0 +1,25 @@
+meta {
+  name: get status
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{base_url}}/api/list/status/:externalID
+  body: none
+  auth: none
+}
+
+params:path {
+  externalID: 550
+}
+
+params:query {
+  ~source: tmdb
+}
+
+docs {
+  Returns the list status of a media item by its external ID.
+  Optional query param: source (defaults to "tmdb").
+  Requires a valid session cookie.
+}
