@@ -34,7 +34,11 @@ export const useAuth = () => {
           )
         } catch {
           user.value = null
-          if (route.path !== '/login') {
+          const middleware = route.meta.middleware
+          const hasAuthMiddleware = Array.isArray(middleware)
+            ? middleware.includes('auth')
+            : middleware === 'auth'
+          if (hasAuthMiddleware && route.path !== '/login') {
             await navigateTo('/login')
           }
         }
