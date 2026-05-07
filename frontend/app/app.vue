@@ -38,10 +38,7 @@ const discoverItems = [
 const isDiscoverActive = computed(() => route.path === '/discover')
 
 const userMenuItems = computed(() => [
-  [
-    { label: 'My List', icon: 'i-lucide-bookmark', to: '/list' },
-    { label: 'Settings', icon: 'i-lucide-settings', to: '/settings' },
-  ],
+  [{ label: 'My List', icon: 'i-lucide-bookmark', to: '/list' }],
   [{ label: 'Logout', icon: 'i-lucide-log-out', onSelect: logout }],
 ])
 
